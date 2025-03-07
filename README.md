@@ -21,27 +21,32 @@ Git: NolbertoChagala
 ## Librerías
 
 Axios
+
 Pinia
+
 Yup
+
 Vee-Validate
+
 TailwindCSS
+
 PRIMEVUE
 
 ## Como correr el proyecto
 
-### Primero clonamos el repositorio
+#### Primero clonamos el repositorio
 
 ```sh
 git clone https://github.com/JAASM1/Proyecto_seguridad_front.git
 ```
 
-### Una vez clando, lo abrimos y ejecutamos el siguiente comando
+#### Una vez clando, lo abrimos y ejecutamos el siguiente comando
 
 ```sh
 npm install
 ```
 
-### Una vez instalado, librerias y dependencias del proyecto, ejecutamos el proyecto con el siguiente comando
+#### Una vez instalado, librerias y dependencias del proyecto, ejecutamos el proyecto con el siguiente comando
 
 ```sh
 npm run dev

@@ -1,39 +1,48 @@
-# gestorinve_front
+# Gestor de Inventario
 
-This template should help get you started developing with Vue 3 in Vite.
+## Problematica
 
-## Recommended IDE Setup
+Muchas empresas enfrentan dificultades para gestionar su inventario de manera eficiente, lo que puede ocasionar errores en los registros, pérdidas de productos y problemas en el control de stock. La falta de información organizada y la ausencia de herramientas automatizadas dificultan la toma de decisiones, generando retrasos y desorganización en el almacén. Además, la gestión manual puede derivar en inconsistencias en los datos, afectando el abastecimiento y la relación con los proveedores. Un sistema web optimizaría estos procesos, permitiendo un mejor control de los productos, facilitando la actualización del inventario y proporcionando reportes que ayuden en la planificación y administración eficiente del almacén.
 
-[VSCode](https://code.visualstudio.com/) + [Volar](https://marketplace.visualstudio.com/items?itemName=Vue.volar) (and disable Vetur).
+## Integrantes
 
-## Type Support for `.vue` Imports in TS
+Alvarado Salazar Anthony Willians - 22393157
+Git: WilliansAS
 
-TypeScript cannot handle type information for `.vue` imports by default, so we replace the `tsc` CLI with `vue-tsc` for type checking. In editors, we need [Volar](https://marketplace.visualstudio.com/items?itemName=Vue.volar) to make the TypeScript language service aware of `.vue` types.
+Ortega Mazun Miguel Angel - 22393179
+Git: 22393179 Miguel Ortega
 
-## Customize configuration
+Canche Ramirez Angel Julian - 22393136
+Git: JuL14N64
 
-See [Vite Configuration Reference](https://vite.dev/config/).
+Coto Chagala Nolberto - 21393137
+Git: NolbertoChagala
 
-## Project Setup
+## Librerías
+
+Axios
+Pinia
+Yup
+Vee-Validate
+TailwindCSS
+PRIMEVUE
+
+## Como correr el proyecto
+
+### Primero clonamos el repositorio
+
+```sh
+git clone https://github.com/JAASM1/Proyecto_seguridad_front.git
+```
+
+### Una vez clando, lo abrimos y ejecutamos el siguiente comando
 
 ```sh
 npm install
 ```
 
-### Compile and Hot-Reload for Development
+### Una vez instalado, librerias y dependencias del proyecto, ejecutamos el proyecto con el siguiente comando
 
 ```sh
 npm run dev
-```
-
-### Type-Check, Compile and Minify for Production
-
-```sh
-npm run build
-```
-
-### Lint with [ESLint](https://eslint.org/)
-
-```sh
-npm run lint
 ```

@@ -37,7 +37,7 @@ PRIMEVUE
 #### Primero clonamos el repositorio
 
 ```sh
-git clone https://github.com/JAASM1/Proyecto_seguridad_front.git
+git clone https://github.com/NolbertoChagala/gestorinve_front.git
 ```
 
 #### Una vez clando, lo abrimos y ejecutamos el siguiente comando

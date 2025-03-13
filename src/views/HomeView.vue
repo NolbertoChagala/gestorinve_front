@@ -4,12 +4,12 @@ import { useRouter } from 'vue-router'
 const router = useRouter()
 
 const goToInventory = () => {
-  router.push('/')
+  router.push('/login')
 }
 </script>
 
 <template>
-  <main class="flex flex-col items-center justify-center h-screen bg-gray-100">
+  <main class="flex flex-col items-center justify-center h-screen">
     <div class="bg-white p-8 rounded-lg shadow-md text-center">
       <h1 class="text-3xl font-bold text-gray-800">¡Bienvenido al Gestor de Inventario!</h1>
       <p class="text-gray-600 mt-2">Administra tus productos de manera eficiente y organizada.</p>

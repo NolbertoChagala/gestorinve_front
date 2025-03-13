@@ -1,17 +1,9 @@
 <script setup lang="ts">
-import { RouterLink, RouterView } from 'vue-router'
-import HelloWorld from './components/HelloWorld.vue'
+import { RouterView } from 'vue-router'
 </script>
 
 <template>
-  <header>
-      <nav>
-        <RouterLink to="/">Home</RouterLink>
-        <RouterLink to="/about">About</RouterLink>
-      </nav>
-  </header>
-  <RouterView />
+  <div class="bg-[#EFEFEF] min-h-screen m-0 p-0">
+    <RouterView />
+  </div>
 </template>
-
-<style>
-</style>

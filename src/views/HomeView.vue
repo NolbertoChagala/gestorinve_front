@@ -1,28 +1,24 @@
-<template>
-  <div class="flex flex-col items-center justify-center min-h-screen bg-gray-100">
-    <h1 class="text-3xl font-bold underline text-blue-600 transition-all duration-300" :class="{ 'text-red-600': isClicked }">
-      {{ message }}
-    </h1>
-    <button 
-      class="mt-4 px-4 py-2 bg-blue-500 text-white rounded hover:bg-blue-700 transition"
-      @click="toggleMessage">
-      Click Me
-    </button>
-  </div>
-</template>
+<script setup lang="ts">
+import { useRouter } from 'vue-router'
 
-<script setup>
-import { ref } from "vue";
+const router = useRouter()
 
-const message = ref("Hello world!");
-const isClicked = ref(false);
-
-const toggleMessage = () => {
-  isClicked.value = !isClicked.value;
-  message.value = isClicked.value ? "You clicked me!" : "Hello world!";
-};
+const goToInventory = () => {
+  router.push('/')
+}
 </script>
 
-<style scoped>
-</style>
-
+<template>
+  <main class="flex flex-col items-center justify-center h-screen bg-gray-100">
+    <div class="bg-white p-8 rounded-lg shadow-md text-center">
+      <h1 class="text-3xl font-bold text-gray-800">¡Bienvenido al Gestor de Inventario!</h1>
+      <p class="text-gray-600 mt-2">Administra tus productos de manera eficiente y organizada.</p>
+      <button
+        @click="goToInventory"
+        class="mt-4 bg-green-500 text-white px-6 py-2 rounded-lg shadow hover:bg-green-600"
+      >
+        Ir al Inventario
+      </button>
+    </div>
+  </main>
+</template>

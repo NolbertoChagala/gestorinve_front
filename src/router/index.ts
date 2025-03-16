@@ -24,6 +24,15 @@ const router = createRouter({
       name: 'pedidos',
       component: () => import('../views/pages/PedidosView.vue')
     },
+    {
+      path: '/gestionUsuarios',
+      name: 'gestionUsuarios',
+      component: () => import('../views/pages/gestionUsuarios/UsuariosView.vue')
+    },{
+      path: '/gestionRoles',
+      name: 'gestionRoles',
+      component: () => import('../views/pages/gestionUsuarios/RolesView.vue')
+    },
   ],
 })
 

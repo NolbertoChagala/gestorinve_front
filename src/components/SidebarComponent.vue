@@ -68,7 +68,7 @@ const toggleGestionUsuarios = () => {
 }
 
 
-// para poder cambiar el color a los botones de "GESTIÓN DE USUARIOS"
+// para poder cambiar el color a los botones
 const router = useRouter();
 const route = useRoute();
 const cambiarColor = ref(route.name as string);

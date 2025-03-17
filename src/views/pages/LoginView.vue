@@ -1,6 +1,3 @@
-<script setup lang="ts">
-</script>
-
 <template>
     <div className="flex flex-col justify-center items-center min-h-screen">
         <div className="bg-white w-96 h-96 rounded-2xl shadow-2xl">
@@ -26,9 +23,24 @@
                     </button>
                 </div>
                 <p>
-                    ¿No tienes una cuenta? <a className="hover:text-blue-600" href="#">Regístrate</a>
+                    ¿No tienes una cuenta?
+                    <button
+                    @click="mostrarModalRegister = true"
+                    className="text-blue-500 hover:underline cursor-pointer">
+                        Registrate
+                    </button>
                 </p>
             </div>
         </div>
     </div>
+
+    <ModalRegister v-if="mostrarModalRegister" @cerrar="mostrarModalRegister = false"/>
 </template>
+
+<script setup lang="ts">
+import { ref } from 'vue';
+import ModalRegister from '@/components/ModalRegister.vue';
+
+const mostrarModalRegister = ref(false);
+
+</script>

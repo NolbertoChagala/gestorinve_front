@@ -1,6 +1,5 @@
-// Objetivo: Contiene las funciones para realizar peticiones genéricas a la API.
+// genericRequest.ts
 import { apiClient } from '../services/ApiService'
-import { logService } from '../services/LogService'
 
 type HTTPMethod = 'GET' | 'POST' | 'PUT' | 'DELETE'
 
@@ -20,31 +19,8 @@ export const genericRequest = async (
     return response.data
   } catch (error: any) {
     const errorMessage = error.response?.data || error.message || 'Error desconocido'
-
-    await logService.log('error', `Error en genericRequest: ${errorMessage}`, {
-      url,
-      method,
-      body,
-      headers,
-      error: errorMessage,
-    })
+    console.error(`Error en ${method} ${url}: ${errorMessage}`)
 
     throw new Error(errorMessage)
   }
-}
-
-export const genericRequestAuthenticated = async (
-  url: string,
-  method: HTTPMethod,
-  body?: any
-) => {
-  const token = localStorage.getItem('token')
-
-  if (!token) {
-    throw new Error('No se encontró el token de autenticación')
-  }
-
-  return await genericRequest(url, method, body, {
-    Authorization: `Bearer ${token}`,
-  })
 }

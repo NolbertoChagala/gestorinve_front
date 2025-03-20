@@ -22,7 +22,7 @@
                     @click="navegar('pedidos')" 
                     :class="['flex items-center justify-center w-full h-[7vh] rounded-xl border border-[#CDCDCD] cursor-pointer',
                             cambiarColor === 'pedidos' ? 'bg-[#9191DE] hover:bg-[#7a7ad6] text-white font-bold' : 'bg-[#FAFAFA] hover:bg-[#E6E6E6]']">
-                    <h2 class="text-black font-bold">PEDIDOS</h2>
+                    <h2 class="text-black font-bold">MOVIMIENTOS</h2>
                 </button>
                 <div>
                     <!-- Boton para gestión de usuarios -->
@@ -61,6 +61,8 @@ import { ref, watch } from 'vue';
 import { useRoute, useRouter } from 'vue-router';
 import usuarioImage from '../assets/images/usuarioImage.svg'
 import flechaAbajoImage from '../assets/images/flechaAbajoImage.svg'
+import Button from 'primevue/button';
+
 
 const isGestionUsuariosOpen = ref(false);
 const toggleGestionUsuarios = () => {

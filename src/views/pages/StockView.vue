@@ -60,6 +60,8 @@ import editarImage from '../../assets/images/editarImage.svg';
 import eliminarImage from '../../assets/images/eliminarImage.svg'
 import ModalAgregarProducto from '@/components/ModalAgregarProducto.vue';
 
+
+
 const mostrarModalCrear = ref(false);
 
 </script>

@@ -17,23 +17,23 @@
         <thead class="bg-gray-200 text-gray-700">
           <tr>
             <th class="w-1/6 py-3 px-4 text-center">ID</th>
-            <th class="w-2/6 py-3 px-4 text-center">Nombre</th>
+            <th class="w-2/6 py-3 px-4 text-center">Categoría</th>
             <th class="w-2/6 py-3 px-4 text-center">Acciones</th>
           </tr>
         </thead>
         <tbody class="divide-y divide-gray-300">
-          <tr v-for="(categoria, index) in categorias" :key="index" class="hover:bg-gray-100 transition">
-            <td class="py-3 px-4 text-center">{{ categoria.id }}</td>
-            <td class="py-3 px-4 text-center">{{ categoria.nombre }}</td>
+          <tr v-for="category in categoryStore.categories" :key="category.id_categoria" class="hover:bg-gray-100 transition">
+            <td class="py-3 px-4 text-center">{{ category.id_categoria }}</td>
+            <td class="py-3 px-4 text-center">{{ category.categoria }}</td>
             <td class="py-3 px-4 text-center space-x-2">
               <button 
-                @click="editCategory(categoria)" 
+                @click="editCategory(category)" 
                 class="bg-yellow-500 text-white px-3 py-1 rounded hover:bg-yellow-600 transition"
               >
                 ✏️ Editar
               </button>
               <button 
-                @click="deleteCategory(categoria.id)" 
+                @click="deleteCategory(category.id_categoria)" 
                 class="bg-red-500 text-white px-3 py-1 rounded hover:bg-red-600 transition"
               >
                 🗑️ Eliminar
@@ -48,27 +48,24 @@
     <AddCategoryModal
       :isOpen="isCreateModalOpen" 
       @close="isCreateModalOpen = false" 
-      @confirm="handleCreateCategory"
     />
   </div>
 </template>
 
 <script setup lang="ts">
 import AddCategoryModal from '@/components/Modals/AddCategoryModal.vue';
-import { ref } from 'vue';
+import { useCategoryStore } from '@/stores/categoryStore';
+import { ref, onMounted } from 'vue';
+
+const categoryStore = useCategoryStore();
+
+// Llamar a las categorías al montar la vista
+onMounted(() => {
+  categoryStore.fetchCategories();
+});
 
 // Estado para manejar la apertura del modal
 const isCreateModalOpen = ref(false);
-
-// Datos de categorías (simulación)
-const categorias = ref([
-  { id: 1, nombre: "Electrónica" },
-  { id: 2, nombre: "Ropa" },
-  { id: 3, nombre: "Alimentos" },
-  { id: 4, nombre: "Hogar" },
-  { id: 5, nombre: "Salud" },
-  { id: 6, nombre: "Automotriz" }
-]);
 
 // Métodos de acciones
 const editCategory = (categoria: any) => {
@@ -77,10 +74,5 @@ const editCategory = (categoria: any) => {
 
 const deleteCategory = (id: number) => {
   console.log("Eliminando categoría con ID:", id);
-};
-
-// Confirmación después de crear categoría
-const handleCreateCategory = (category: string) => {
-  console.log("Categoría creada:", category);
 };
 </script>

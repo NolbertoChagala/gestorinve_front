@@ -71,7 +71,6 @@ import { ref } from 'vue';
 import { useRouter } from 'vue-router';
 import { login } from '@/services/AuthService';
 
-// Declaración de variables reactivas con tipos correctos
 const mostrarModalRegister = ref<boolean>(false);
 const email = ref<string>('');
 const password = ref<string>('');
@@ -95,13 +94,9 @@ const loginUser = async () => {
     }
 
     console.log("Datos del usuario:", usuario);
-
-    // Verifica el valor del rol correctamente
     console.log("Rol del usuario:", usuario.rol);
-
-    // Guardar en localStorage
     localStorage.setItem('PKUsuario', usuario.id_usuario);
-    localStorage.setItem('rolUsuario', usuario.rol.rol);  // Guardar el nombre del rol (usuario.rol.rol)
+    localStorage.setItem('rolUsuario', usuario.rol.rol);
     localStorage.setItem('token', token);
 
     // Redirigir según el rol
@@ -113,7 +108,7 @@ const loginUser = async () => {
       router.push('/welcome'); // Redirige a welcome si es usuario común
     } else {
       console.log("Redirigiendo a la página de inicio");
-      router.push('/'); // Redirección por defecto
+      router.push('/login'); // Si no es ninguno de los 2 roles lo redirige a login
     }
   } catch (error: any) {
     console.error("Error de login:", error.message);

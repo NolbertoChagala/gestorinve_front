@@ -1,37 +1,55 @@
 <template>
-  <div class="flex flex-col justify-center items-center min-h-screen">
-    <div class="bg-white w-96 h-96 rounded-2xl shadow-2xl">
-      <h1 class="text-center font-bold text-2xl m-5">
-        Inicie sesión en su cuenta
-      </h1>
-      <div class="flex flex-col items-center gap-4 ml-6 mr-6">
+ <div class="flex flex-col justify-center items-center min-h-screen bg-gradient-to-r from-teal-100 to-pink-100">
+
+    <!-- Contenedor del login con borde superior verde -->
+    <div class="bg-white w-96 rounded-2xl shadow-xl p-8 border-t-4 border-teal-900">
+      <!-- Título del formulario -->
+      <h1 class="text-center text-3xl font-bold text-gray-800 mb-8">Gestor de Inventario</h1>
+
+      <!-- Ícono de Heroicons -->
+      <div class="flex justify-center mb-3">
+        <CogIcon class="text-blue-500 w-30 text-5xl"/>
+      </div>
+
+      <!-- Formulario de login -->
+      <div class="flex flex-col gap-6">
+        <!-- Campo de correo electrónico -->
         <div class="w-full">
-          <p class="mb-2">Correo electrónico</p>
+          <p class="mb-2 text-lg text-gray-700">Correo electrónico</p>
           <input
             v-model="email"
             type="text"
-            class="border-2 w-full p-2 rounded-md"
+            class="border-2 border-gray-300 w-full p-3 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
             placeholder="Ingrese su correo electrónico"
           />
         </div>
+
+        <!-- Campo de contraseña -->
         <div class="w-full">
-          <p class="mb-2">Contraseña</p>
+          <p class="mb-2 text-lg text-gray-700">Contraseña</p>
           <input
             v-model="password"
             type="password"
-            class="border-2 w-full p-2 rounded-md"
+            class="border-2 border-gray-300 w-full p-3 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
             placeholder="Ingrese su contraseña"
           />
         </div>
-        <div class="w-full mt-2">
+
+        <!-- Mensaje de error -->
+        <div v-if="errorMessage" class="text-red-500 text-sm text-center mt-2">{{ errorMessage }}</div>
+
+        <!-- Botón de inicio de sesión -->
+        <div class="w-full mt-4">
           <button
             @click="loginUser"
-            class="bg-gray-600 text-white hover:bg-gray-700 rounded-md w-full p-2 cursor-pointer"
+            class="bg-blue-600 text-white hover:bg-blue-700 rounded-md w-full p-3 cursor-pointer focus:outline-none focus:ring-2 focus:ring-blue-500"
           >
             Iniciar Sesión
           </button>
         </div>
-        <p>
+
+        <!-- Enlace para registro -->
+        <p class="text-center text-sm mt-4">
           ¿No tienes una cuenta?
           <button
             @click="mostrarModalRegister = true"
@@ -44,21 +62,24 @@
     </div>
   </div>
 
+  <!-- Modal de registro -->
   <ModalRegister v-if="mostrarModalRegister" @cerrar="mostrarModalRegister = false" />
 </template>
 
 <script setup lang="ts">
 import { ref } from 'vue';
 import { useRouter } from 'vue-router';
-import ModalRegister from '@/components/ModalRegister.vue';
 import { login } from '@/services/AuthService';
 
-const mostrarModalRegister = ref(false);
-const email = ref('');
-const password = ref('');
+// Declaración de variables reactivas con tipos correctos
+const mostrarModalRegister = ref<boolean>(false);
+const email = ref<string>('');
+const password = ref<string>('');
+const errorMessage = ref<string>('');
 const router = useRouter();
 
 const loginUser = async () => {
+  errorMessage.value = ''; // Reset error message
   try {
     const response = await login({ correo: email.value, contraseña: password.value });
     console.log("Respuesta completa del backend:", response);
@@ -67,30 +88,38 @@ const loginUser = async () => {
       throw new Error("La respuesta del backend no es un objeto válido.");
     }
 
-    const responseData = response;
-    console.log("Datos procesados:", responseData);
+    const { token, usuario } = response;
 
-    if (!responseData.token || !responseData.usuario) {
+    if (!token || !usuario) {
       throw new Error("La respuesta del backend no contiene el token o los datos del usuario.");
     }
 
-    const user = responseData.usuario;
-    console.log("Datos del usuario:", user);
+    console.log("Datos del usuario:", usuario);
 
-    localStorage.setItem('PKUsuario', user.id_usuario);
-    localStorage.setItem('rolUsuario', user.rol_id); 
-    localStorage.setItem('token', responseData.token);
+    // Verifica el valor del rol correctamente
+    console.log("Rol del usuario:", usuario.rol);
 
-    if (user.rol_id === 3) {
-      router.push('/stock');
+    // Guardar en localStorage
+    localStorage.setItem('PKUsuario', usuario.id_usuario);
+    localStorage.setItem('rolUsuario', usuario.rol.rol);  // Guardar el nombre del rol (usuario.rol.rol)
+    localStorage.setItem('token', token);
+
+    // Redirigir según el rol
+    if (usuario.rol.rol === 'Administrador') {
+      console.log("Redirigiendo a /stock");
+      router.push('/stock'); // Redirige a stock si es Administrador
+    } else if (usuario.rol.rol === 'Usuario') {
+      console.log("Redirigiendo a /welcome");
+      router.push('/welcome'); // Redirige a welcome si es usuario común
     } else {
-      router.push('/home');
+      console.log("Redirigiendo a la página de inicio");
+      router.push('/'); // Redirección por defecto
     }
-
-  } catch (error) {
+  } catch (error: any) {
     console.error("Error de login:", error.message);
+    errorMessage.value = error.message;
   }
 };
-
 </script>
+
 

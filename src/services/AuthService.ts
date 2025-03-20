@@ -1,43 +1,65 @@
-import api from './ApiService'
-import axios from 'axios';
-
+import api from '../util/axiosInstance'
 
 interface Credentials {
   correo: string
   contraseña: string
 }
 
+interface RegisterCredentials {
+  nombre: string
+  correo: string
+  contraseña: string
+  confirmarContraseña: string
+}
+
 export const login = async (credentials: Credentials) => {
   try {
-    // Realizamos la solicitud a la API para obtener el token
     const response = await api.post('/auth/login', credentials)
-
-    // Verificamos si el token está en la respuesta
     const token = response.data.token
     if (token) {
-      // Guardamos el token en el localStorage
       localStorage.setItem('token', token)
     }
-
-    // Retornamos solo los datos necesarios (por ejemplo, el token o la respuesta completa)
     return response.data
-  } catch (error) {
+  } catch (error: any) {
     console.error('Error en login:', error)
-    // Manejo de errores más específico (si es posible)
     if (error.response) {
       if (error.response.status === 401) {
         throw new Error('Credenciales inválidas')
       }
-      throw new Error(error.response.data || 'Error en el login')
+      throw new Error(error.response.data?.message || 'Error en el login')
     }
     throw new Error('Error en el login')
   }
 }
 
-export const logout = () => {
-  // Eliminamos el token del localStorage
-  localStorage.removeItem('token')
+export const register = async (credentials: RegisterCredentials) => {
+  try {
+    if (credentials.contraseña !== credentials.confirmarContraseña) {
+      throw new Error('Las contraseñas no coinciden')
+    }
 
-  // Redirigimos a la página de login, preferentemente usando el router si se usa Vue Router
+    // Enviamos los datos al backend
+    const response = await api.post('/auth/register', {
+      nombre: credentials.nombre,
+      correo: credentials.correo,
+      contraseña: credentials.contraseña,
+    })
+
+    // Retornamos los datos necesarios (puedes devolver un mensaje de éxito o usuario creado)
+    return response.data
+  } catch (error: any) {
+    console.error('Error en el registro:', error)
+    if (error.response) {
+      if (error.response.status === 400) {
+        throw new Error(error.response.data?.message || 'Error en el registro')
+      }
+      throw new Error(error.response.data?.message || 'Error en el registro')
+    }
+    throw new Error('Error en el registro')
+  }
+}
+
+export const logout = () => {
+  localStorage.removeItem('token')
   window.location.href = '/login'
 }

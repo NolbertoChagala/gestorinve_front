@@ -16,7 +16,6 @@ export const useInventoryStore = defineStore('inventory', () => {
             console.error("Error al obtener productos:", error);
         }
     }
-
     return {
         products,
         fetchProducts

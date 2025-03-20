@@ -9,7 +9,7 @@ export const useUserStore = defineStore('user', () => {
   const currentUser = ref<User | null>(null) // Usuario actual
   const error = ref<string | null>(null) // Estado para manejar errores
 
-  // Función para manejar errores
+
   const handleError = (message: string, err: any) => {
     console.error(message, err)
     error.value = `${message} ${err.response?.data?.message || err.message}`
@@ -68,7 +68,6 @@ export const useUserStore = defineStore('user', () => {
     }
   }
 
-  // Getters
   const allUsuarios = () => usuarios.value
   const getCurrentUser = () => currentUser.value
   const getError = () => error.value

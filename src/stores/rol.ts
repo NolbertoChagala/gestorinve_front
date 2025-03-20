@@ -1,7 +1,7 @@
 import { defineStore } from 'pinia'
 import { ref } from 'vue'
-import type { Rol } from '@/interfaces/rol' // Asegúrate de que esta ruta sea correcta
-import api from '@/services/ApiService'// Ajusta la ruta según tu estructura
+import type { Rol } from '@/interfaces/rol'
+import * as rolService from '@/services/rolServices'
 
 export const useRolStore = defineStore('rol', () => {
   // Estado
@@ -15,8 +15,7 @@ export const useRolStore = defineStore('rol', () => {
     isLoading.value = true
     error.value = null
     try {
-      const response = await api.get<Rol[]>('/roles')
-      roles.value = response.data
+      roles.value = await rolService.getRoles()
     } catch (err) {
       error.value = 'Error al cargar los roles'
       console.error('Error fetching roles:', err)
@@ -29,8 +28,7 @@ export const useRolStore = defineStore('rol', () => {
     isLoading.value = true
     error.value = null
     try {
-      const response = await api.get<Rol>(`/roles/${id}`)
-      currentRol.value = response.data
+      currentRol.value = await rolService.getRolById(id)
     } catch (err) {
       error.value = 'Error al cargar el rol'
       console.error('Error fetching rol:', err)
@@ -43,8 +41,8 @@ export const useRolStore = defineStore('rol', () => {
     isLoading.value = true
     error.value = null
     try {
-      const response = await api.post<Rol>('/roles', rol)
-      roles.value.push(response.data)
+      const newRol = await rolService.createRol(rol)
+      roles.value.push(newRol)
     } catch (err) {
       error.value = 'Error al crear el rol'
       console.error('Error creating rol:', err)
@@ -57,15 +55,15 @@ export const useRolStore = defineStore('rol', () => {
     isLoading.value = true
     error.value = null
     try {
-      const response = await api.put<Rol>(`/roles/${id}`, rol)
+      const updatedRol = await rolService.updateRol(id, rol)
 
       // Actualiza la lista de roles en el frontend
       const index = roles.value.findIndex((r) => r.id_rol === id)
       if (index !== -1) {
-        roles.value[index] = response.data
+        roles.value[index] = updatedRol
       }
       if (currentRol.value?.id_rol === id) {
-        currentRol.value = response.data
+        currentRol.value = updatedRol
       }
     } catch (err) {
       error.value = 'Error al actualizar el rol'
@@ -79,7 +77,7 @@ export const useRolStore = defineStore('rol', () => {
     isLoading.value = true
     error.value = null
     try {
-      await api.delete(`/roles/${id}`)
+      await rolService.deleteRol(id)
       roles.value = roles.value.filter((r) => r.id_rol !== id)
       if (currentRol.value?.id_rol === id) {
         currentRol.value = null

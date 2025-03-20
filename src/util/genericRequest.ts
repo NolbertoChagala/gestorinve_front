@@ -1,4 +1,4 @@
-import api from '@/services/ApiService'
+import api from './axiosInstance'
 import axios from 'axios'
 
 type HTTPMethod = 'GET' | 'POST' | 'PUT' | 'DELETE'

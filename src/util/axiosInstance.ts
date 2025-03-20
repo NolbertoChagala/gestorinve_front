@@ -10,7 +10,7 @@ const api = axios.create({
 // Interceptor para agregar el token a cada solicitud
 api.interceptors.request.use(
     (config) => {
-        const token = localStorage.getItem('token') 
+        const token = localStorage.getItem('token') // Obtenemos el token dinámicamente
         if (token) {
             config.headers.Authorization = `Bearer ${token}`
         }
@@ -27,3 +27,6 @@ api.interceptors.response.use(
         return Promise.reject(error)
     }
 )
+
+
+export default api;

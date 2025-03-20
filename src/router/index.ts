@@ -39,6 +39,11 @@ const router = createRouter({
       component: () => import('../views/pages/gestionUsuarios/RolesView.vue'),
       meta: { requiresAuth: true },
     },
+    {
+      path: '/categories',
+      name: 'categories',
+      component: () => import('../views/pages/CategoryView.vue'),
+    }
   ],
 })
 

@@ -3,7 +3,6 @@
 
     <!-- Contenedor del login con borde superior verde -->
     <div class="bg-white w-96 rounded-2xl shadow-xl p-8 border-t-4 border-teal-900">
-      <!-- Título del formulario -->
       <h1 class="text-center text-3xl font-bold text-gray-800 mb-8">Gestor de Inventario</h1>
 
       <!-- Ícono de Heroicons -->
@@ -13,7 +12,6 @@
 
       <!-- Formulario de login -->
       <div class="flex flex-col gap-6">
-        <!-- Campo de correo electrónico -->
         <div class="w-full">
           <p class="mb-2 text-lg text-gray-700">Correo electrónico</p>
           <input
@@ -35,10 +33,8 @@
           />
         </div>
 
-        <!-- Mensaje de error -->
         <div v-if="errorMessage" class="text-red-500 text-sm text-center mt-2">{{ errorMessage }}</div>
 
-        <!-- Botón de inicio de sesión -->
         <div class="w-full mt-4">
           <button
             @click="loginUser"
@@ -48,7 +44,6 @@
           </button>
         </div>
 
-        <!-- Enlace para registro -->
         <p class="text-center text-sm mt-4">
           ¿No tienes una cuenta?
           <button
@@ -69,6 +64,8 @@
 <script setup lang="ts">
 import { ref } from 'vue';
 import { useRouter } from 'vue-router';
+import ModalRegister from '@/components/ModalRegister.vue';
+import { CogIcon } from '@heroicons/vue/24/solid';
 import { login } from '@/services/AuthService';
 
 const mostrarModalRegister = ref<boolean>(false);

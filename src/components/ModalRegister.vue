@@ -42,15 +42,14 @@
 <script setup lang="ts">
 import { ref } from 'vue'
 import { UserPlusIcon, UserIcon, EnvelopeIcon, LockClosedIcon } from '@heroicons/vue/24/solid'
-import { register } from '../services/authservice'
+import { register } from '../services/AuthService'
 import { useToast } from 'vue-toastification'
 
-// Campos del formulario
 const nombre = ref('')
 const correo = ref('')
 const contraseña = ref('')
 const confirmarContraseña = ref('')
-const toast = useToast() // Usamos el toast
+const toast = useToast()
 
 // Lógica del registro
 const registrarse = async () => {

@@ -1,36 +1,36 @@
 <template>
   <div class="flex flex-col justify-center items-center min-h-screen">
-    <div class="bg-white w-96 p-6 rounded-2xl shadow-2xl">
-      <h1 class="text-center font-bold text-2xl mb-5">Inicie sesión en su cuenta</h1>
-
-      <div class="flex flex-col items-center gap-4">
+    <div class="bg-white w-96 h-96 rounded-2xl shadow-2xl">
+      <h1 class="text-center font-bold text-2xl m-5">
+        Inicie sesión en su cuenta
+      </h1>
+      <div class="flex flex-col items-center gap-4 ml-6 mr-6">
         <div class="w-full">
           <p class="mb-2">Correo electrónico</p>
-          <input type="email" v-model="email" class="border-2 w-full p-2 rounded-md" required />
+          <input
+            v-model="email"
+            type="text"
+            class="border-2 w-full p-2 rounded-md"
+            placeholder="Ingrese su correo electrónico"
+          />
         </div>
-
         <div class="w-full">
           <p class="mb-2">Contraseña</p>
           <input
-            type="password"
             v-model="password"
+            type="password"
             class="border-2 w-full p-2 rounded-md"
-            required
+            placeholder="Ingrese su contraseña"
           />
         </div>
-
         <div class="w-full mt-2">
           <button
-            @click="handleLogin"
-            :disabled="loading"
+            @click="loginUser"
             class="bg-gray-600 text-white hover:bg-gray-700 rounded-md w-full p-2 cursor-pointer"
           >
-            {{ loading ? 'Cargando...' : 'Iniciar Sesión' }}
+            Iniciar Sesión
           </button>
         </div>
-
-        <p v-if="error" class="text-red-500 text-sm">{{ error }}</p>
-
         <p>
           ¿No tienes una cuenta?
           <button
@@ -48,42 +48,49 @@
 </template>
 
 <script setup lang="ts">
-import { ref } from 'vue'
-import axios from 'axios'
-import { useRouter } from 'vue-router'
-import ModalRegister from '@/components/ModalRegister.vue'
+import { ref } from 'vue';
+import { useRouter } from 'vue-router';
+import ModalRegister from '@/components/ModalRegister.vue';
+import { login } from '@/services/AuthService';
 
-const email = ref('')
-const password = ref('')
-const loading = ref(false)
-const error = ref(null)
-const mostrarModalRegister = ref(false)
-const router = useRouter()
+const mostrarModalRegister = ref(false);
+const email = ref('');
+const password = ref('');
+const router = useRouter();
 
-const handleLogin = async () => {
-  error.value = null
-  loading.value = true
-
+const loginUser = async () => {
   try {
-    const response = await axios.post('https://localhost:7126/api/auth/login', {
-      user: {
-        correo: email.value,
-        contraseña: password.value,
-      },
-    })
+    const response = await login({ correo: email.value, contraseña: password.value });
+    console.log("Respuesta completa del backend:", response);
 
-    console.log("Respuesta del servidor", response.data);
+    if (!response || typeof response !== 'object') {
+      throw new Error("La respuesta del backend no es un objeto válido.");
+    }
 
-    const { token, user } = response.data
-    localStorage.setItem('authToken', token)
-    localStorage.setItem('userData', JSON.stringify(user))
+    const responseData = response;
+    console.log("Datos procesados:", responseData);
 
-    router.push('/stock')
-  } catch (err) {
-    console.log("Error en la solicitud", err.response.data);
-    error.value = 'Correo o contraseña incorrectos'
-  } finally {
-    loading.value = false
+    if (!responseData.token || !responseData.usuario) {
+      throw new Error("La respuesta del backend no contiene el token o los datos del usuario.");
+    }
+
+    const user = responseData.usuario;
+    console.log("Datos del usuario:", user);
+
+    localStorage.setItem('PKUsuario', user.id_usuario);
+    localStorage.setItem('rolUsuario', user.rol_id); 
+    localStorage.setItem('token', responseData.token);
+
+    if (user.rol_id === 3) {
+      router.push('/stock');
+    } else {
+      router.push('/home');
+    }
+
+  } catch (error) {
+    console.error("Error de login:", error.message);
   }
-}
+};
+
 </script>
+

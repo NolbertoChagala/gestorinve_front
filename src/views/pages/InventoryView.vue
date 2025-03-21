@@ -65,6 +65,8 @@ import eliminarImage from '../../assets/images/eliminarImage.svg'
 import ModalAgregarProducto from '@/components/ModalAgregarProducto.vue';
 import { useInventoryStore } from '@/stores/inventoryStore';
 
+
+
 const mostrarModalCrear = ref(false);
 const inventoryStore = useInventoryStore();
 const products = computed(() => inventoryStore.products)

@@ -43,7 +43,6 @@ const router = createRouter({
       component: () => import('../views/pages/ProviderView.vue'),
       meta: { requiresAuth: true },
     },
-    
     {
       path: '/categories',
       name: 'categories',

@@ -27,13 +27,12 @@
             <td class="py-3 px-4 text-center">{{ category.categoria }}</td>
             <td class="py-3 px-4 text-center space-x-2">
               <button 
-                @click="editCategory(category)" 
                 class="bg-yellow-500 text-white px-3 py-1 rounded hover:bg-yellow-600 transition"
               >
                 ✏️ Editar
               </button>
               <button 
-                @click="deleteCategory(category.id_categoria)" 
+                @click="confirmDelete(category.id_categoria)" 
                 class="bg-red-500 text-white px-3 py-1 rounded hover:bg-red-600 transition"
               >
                 🗑️ Eliminar
@@ -49,6 +48,9 @@
       :isOpen="isCreateModalOpen" 
       @close="isCreateModalOpen = false" 
     />
+
+    <!-- Componente de Confirmación de Eliminación -->
+    <ConfirmDelete ref="confirmDeleteModal" @confirmDelete="deleteCategory" />
   </div>
 </template>
 
@@ -56,6 +58,7 @@
 import AddCategoryModal from '@/components/Modals/AddCategoryModal.vue';
 import { useCategoryStore } from '@/stores/categoryStore';
 import { ref, onMounted } from 'vue';
+import ConfirmDelete from '@/components/ConfirmDelete.vue';
 
 const categoryStore = useCategoryStore();
 
@@ -66,13 +69,17 @@ onMounted(() => {
 
 // Estado para manejar la apertura del modal
 const isCreateModalOpen = ref(false);
+const confirmDeleteModal = ref(null);
+const categoryToDelete = ref<number | null>(null);
 
-// Métodos de acciones
-const editCategory = (categoria: any) => {
-  console.log("Editando categoría:", categoria);
+// Muestra el modal de confirmación con el ID de la categoría
+const confirmDelete = (id: number) => {
+  categoryToDelete.value = id;
+  confirmDeleteModal.value?.show(id);
 };
 
-const deleteCategory = (id: number) => {
-  console.log("Eliminando categoría con ID:", id);
+// Elimina la categoría si el usuario confirma
+const deleteCategory = async (id: number) => {
+  await categoryStore.removeCategory(id);
 };
 </script>

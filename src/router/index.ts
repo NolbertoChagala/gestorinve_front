@@ -13,7 +13,6 @@ const router = createRouter({
       path: '/login',
       name: 'login',
       component: () => import('../views/pages/LoginView.vue'),
-
     },
     {
       path: '/stock',
@@ -21,7 +20,6 @@ const router = createRouter({
       component: () => import('../views/pages/InventoryView.vue'),
       meta: { requiresAuth: true },
     },
-
     {
       path: '/pedidos',
       name: 'pedidos',
@@ -32,12 +30,20 @@ const router = createRouter({
       name: 'gestionUsuarios',
       component: () => import('../views/pages/gestionUsuarios/UsuariosView.vue'),
       meta: { requiresAuth: true },
-    },{
+    },
+    {
       path: '/gestionRoles',
       name: 'gestionRoles',
       component: () => import('../views/pages/gestionUsuarios/RolesView.vue'),
       meta: { requiresAuth: true },
     },
+    {
+      path: '/proveedores',
+      name: 'proveedores',
+      component: () => import('../views/pages/ProviderView.vue'),
+      meta: { requiresAuth: true },
+    },
+    
   ],
 })
 

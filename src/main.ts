@@ -10,6 +10,7 @@ import ToastService from "primevue/toastservice";
 import Lara from '@primeuix/themes/lara';
 import ConfirmationService from 'primevue/confirmationservice';
 import ConfirmDialog from 'primevue/confirmdialog';
+import Button from 'primevue/button';
 
 import App from './App.vue'
 import router from './router'
@@ -32,5 +33,6 @@ app.use(PrimeVue, {
 app.use(ConfirmationService);
 app.component('ConfirmDialog', ConfirmDialog);
 app.use(ToastService);
+app.component('Button', Button);
 
 app.mount('#app')

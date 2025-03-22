@@ -1,6 +1,5 @@
 <template>
-    <div class="flex h-screen gap-5 p-5">
-        <SidebarComponent />
+    <SidebarComponent>
         <div class="flex flex-col flex-1 items-center justify-center gap-5">
             <!-- Contenedor superior -->
             <div class="bg-white w-full h-[35vh] rounded-2xl shadow-xl p-5 flex flex-col gap-5">
@@ -58,7 +57,7 @@
                 </table>
             </div>
         </div>
-    </div>
+    </SidebarComponent>
 </template>
 
 <script setup lang="ts">

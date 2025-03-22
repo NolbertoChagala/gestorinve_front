@@ -1,9 +1,10 @@
 <script setup lang="ts">
 import { RouterView } from 'vue-router'
+import Toast from "primevue/toast";
 </script>
 
 <template>
-  <div class="bg-[#EFEFEF] min-h-screen m-0 p-0">
-    <RouterView />
-  </div>
+  <!--Componente de notificaciones-->
+  <Toast />
+  <RouterView />
 </template>

@@ -13,31 +13,41 @@ const router = createRouter({
       path: '/login',
       name: 'login',
       component: () => import('../views/pages/LoginView.vue'),
-
     },
     {
-      path: '/stock',
-      name: 'stock',
+      path: '/inventario',
+      name: 'inventario',
       component: () => import('../views/pages/InventoryView.vue'),
       meta: { requiresAuth: true },
     },
-
     {
-      path: '/pedidos',
-      name: 'pedidos',
+      path: '/movimientos',
+      name: 'movimientos',
       component: () => import('../views/pages/pedidos/PedidosView.vue')
     },
     {
-      path: '/gestionUsuarios',
-      name: 'gestionUsuarios',
+      path: '/usuarios',
+      name: 'usuarios',
       component: () => import('../views/pages/gestionUsuarios/UsuariosView.vue'),
       meta: { requiresAuth: true },
-    },{
-      path: '/gestionRoles',
-      name: 'gestionRoles',
+    },
+    {
+      path: '/roles',
+      name: 'roles',
       component: () => import('../views/pages/gestionUsuarios/RolesView.vue'),
       meta: { requiresAuth: true },
     },
+    {
+      path: '/proveedores',
+      name: 'proveedores',
+      component: () => import('../views/pages/ProviderView.vue'),
+      meta: { requiresAuth: true },
+    },
+    {
+      path: '/categorias',
+      name: 'categorias',
+      component: () => import('../views/pages/CategoryView.vue'),
+    }
   ],
 })
 

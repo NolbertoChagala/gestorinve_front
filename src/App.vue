@@ -6,8 +6,5 @@ import Toast from "primevue/toast";
 <template>
   <!--Componente de notificaciones-->
   <Toast />
-  
-  <div class="bg-[#EFEFEF] min-h-screen m-0 p-0">
-    <RouterView />
-  </div>
+  <RouterView />
 </template>

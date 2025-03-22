@@ -1,6 +1,5 @@
 <template>
-    <div class="flex h-screen gap-5 p-5">
-        <SidebarComponent />
+    <SidebarComponent>
         <div class="flex flex-col flex-1 items-center justify-center gap-5">
             <div class="bg-white w-full h-[35vh] rounded-2xl shadow-xl">
                 <div class="pt-10 pl-8 pr-8">
@@ -51,7 +50,7 @@
                 </table>
             </div>
         </div>
-    </div>
+    </SidebarComponent>
     <ModalProvider v-if="mostrarModal" :proveedorParaEditar="proveedorSeleccionado" @cerrar="cerrarModal" />
 </template>
 

@@ -7,6 +7,7 @@ export const getUsers = async () => {
     return response.data;
 }
 
+
 // Obtener usuario por ID
 export const getUserById = async (id: number) => {
     const response = await genericRequestAuthenticated(`/users/${id}`, 'GET');
@@ -21,8 +22,8 @@ export const createUser = async (data: any) => {
 
 // Editar un usuario
 export const updateUser = async (id: number, data: any) => {
-    const response = await genericRequestAuthenticated('/users/${id}', 'PUT', data);
-    return response.data;
+  const response = await genericRequestAuthenticated(`/users/${id}`, 'PUT', data);
+  return response.data;
 }
 
 // Eliminar un usuario por ID

@@ -24,9 +24,9 @@
                         </tr>
                     </thead>
                     <tbody>
-                        <tr class="text-gray-500 border-b text-lg">
-                            <th class="p-3">Coto Chagala</th>
-                            <th class="p-3">Administrador</th>
+                        <tr v-for=" usuario in usuarios" :key=" usuario.id_usuario" class="text-gray-500 border-b text-lg">
+                            <th class="p-3">{{ usuario.nombre }}</th>
+                            <th class="p-3"></th>
                             <th class="p-3">
                                 <div class="flex justify-center items-center">
                                     <button
@@ -58,5 +58,18 @@
 import SidebarComponent from '@/components/SidebarComponent.vue';
 import editarImage from '../../../assets/images/editarImage.svg'
 import eliminarImage from '../../../assets/images/eliminarImage.svg';
+import { useUserStore } from '@/stores/userStore';
+import { computed, onMounted } from 'vue';
+
+const userStore = useUserStore();
+
+onMounted(async () => {
+  // console.log("Llmando fecthUsuarios")
+  await userStore.fetchUsuarios();
+  // console.log("Usuarios", userStore.usuarios)
+});
+
+const usuarios = computed(() => userStore.usuarios);
+
 
 </script>

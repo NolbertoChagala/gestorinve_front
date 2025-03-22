@@ -45,7 +45,6 @@ export const register = async (credentials: RegisterCredentials) => {
       contraseña: credentials.contraseña,
     })
 
-    // Retornamos los datos necesarios (puedes devolver un mensaje de éxito o usuario creado)
     return response.data
   } catch (error: any) {
     console.error('Error en el registro:', error)

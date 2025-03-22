@@ -3,5 +3,5 @@ export interface User {
   nombre: string
   correo: string
   contraseña: string
-  rol?: string
+  rol: string
 }

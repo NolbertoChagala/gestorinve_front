@@ -1,6 +1,5 @@
 <template>
   <SidebarComponent>
-    <!-- Encabezado y Botón -->
     <div class="bg-white w-full h-[28vh] rounded-2xl shadow-xl mb-8">
       <div class="pt-10 pl-8 pr-8">
         <h1 class="text-5xl font-bold text-gray-800">Categorías</h1>
@@ -14,11 +13,10 @@
       </div>
     </div>
 
-    <!-- Contenedor con Scroll -->
     <div class="w-full overflow-x-auto">
       <div class="bg-white rounded-lg shadow-xl p-4">
         <table class="table-fixed w-full border-collapse rounded-lg overflow-hidden min-w-[800px]">
-          <!-- Encabezado -->
+          
           <thead class="bg-blue-100 text-gray-700">
             <tr>
               <th class="w-1/6 py-3 px-4 text-center">ID</th>
@@ -36,7 +34,8 @@
               <td class="py-3 px-4 text-center">{{ category.categoria }}</td>
               <td class="py-3 px-4 text-center space-x-2">
                 <!-- Botón Editar -->
-                <Button icon="pi pi-pencil" class="p-button-rounded p-button-warning" />
+                <Button icon="pi pi-pencil" class="p-button-rounded p-button-warning"
+                  @click="openEditModal(category)" />
 
                 <!-- Botón Eliminar -->
                 <Button icon="pi pi-trash" class="p-button-rounded p-button-danger"
@@ -52,6 +51,10 @@
     <!-- Modal de Crear Categoría -->
     <AddCategoryModal :isOpen="isCreateModalOpen" @close="isCreateModalOpen = false" />
 
+    <!-- Modal de Editar Categoría -->
+    <EditCategoryModal :isOpen="isEditModalOpen" :selectedCategory="selectedCategory"
+      @close="isEditModalOpen = false" />
+
     <!-- Componente de Confirmación de Eliminación -->
     <ConfirmDelete ref="confirmDeleteModal" @confirmDelete="deleteCategory" />
   </SidebarComponent>
@@ -60,9 +63,11 @@
 <script setup lang="ts">
 import SidebarComponent from '@/components/SidebarComponent.vue';
 import AddCategoryModal from '@/components/Modals/AddCategoryModal.vue';
+import EditCategoryModal from '@/components/Modals/EditCategoryModal.vue';
 import { useCategoryStore } from '@/stores/categoryStore';
 import { ref, onMounted } from 'vue';
 import ConfirmDelete from '@/components/ConfirmDelete.vue';
+import type { ICategory } from '@/interfaces/ICategory';
 
 const categoryStore = useCategoryStore();
 
@@ -75,6 +80,14 @@ onMounted(() => {
 const isCreateModalOpen = ref(false);
 const confirmDeleteModal = ref(null);
 const categoryToDelete = ref<number | null>(null);
+const isEditModalOpen = ref(false);
+const selectedCategory = ref<ICategory | null>(null);
+
+// Abre el modal de edición con la categoría seleccionada
+const openEditModal = (category: ICategory) => {
+  selectedCategory.value = category;
+  isEditModalOpen.value = true;
+};
 
 // Muestra el modal de confirmación con el ID de la categoría
 const confirmDelete = (id: number) => {

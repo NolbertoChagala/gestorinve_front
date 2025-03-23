@@ -20,15 +20,9 @@ export const createRol = async (data: any) => {
 
 //Editar un Rol
 export const updateRol = async (id: number, data: any) => {
-  const response = await genericRequestAuthenticated(`/roles/${id}`, "PUT", data);
-  console.log("📩 Respuesta completa de la API:", response);
-  if (!response || !response.success) {
-      console.error("❌ Error: La API no devolvió datos válidos.");
-      return null;
-  }
-  return { id_rol: id, ...data };
-};
-
+    const response = await genericRequestAuthenticated(`/roles/${id}`, 'PUT', data);
+    return response;
+}
 
 //Eliminar un Rol por ID
 export const deleteRol = async (id: number) => {

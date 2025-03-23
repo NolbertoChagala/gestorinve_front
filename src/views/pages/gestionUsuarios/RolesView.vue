@@ -6,7 +6,7 @@
         <div class="bg-gray-300 w-full h-[2px] mt-3"></div>
         <div>
           <button
-            @click="isCreateModalOpen = true"
+            @click="abrirModalCrear"
             class="bg-blue-500 text-white py-3 px-6 rounded-lg mt-5 shadow-md hover:bg-blue-600 transition cursor-pointer"
           >
             <strong>+</strong> CREAR ROL
@@ -36,7 +36,7 @@
                 <Button
                   icon="pi pi-pencil"
                   class="p-button-rounded p-button-warning"
-                  @click="openEditModal(role)"
+                  @click="abrirModalEditar(role)"
                 />
 
                 <!-- Botón Eliminar -->
@@ -52,10 +52,12 @@
       </div>
     </div>
 
-    <!-- Modal para agregar rol -->
+    <!-- Modal para agregar/editar rol -->
     <AddRolModal
-      :isOpen="isCreateModalOpen"
-      @close="isCreateModalOpen = false"
+      v-if="mostrarModal"
+      :is-open="mostrarModal"
+      :rol-para-editar="rolSeleccionado"
+      @close="cerrarModal"
     />
 
     <!-- Modal de confirmación para eliminar rol -->
@@ -63,51 +65,61 @@
       ref="confirmDeleteModal"
       @confirmDelete="deleteRol"
     />
-
-    <!-- Modal para editar rol -->
-    <EditRolModal
-      :isOpen="isEditModalOpen"
-      :role="selectedRole"
-      @close="isEditModalOpen = false"
-    />
   </SidebarComponent>
 </template>
 
 <script setup lang="ts">
-import SidebarComponent from '@/components/SidebarComponent.vue'
+import { ref, onMounted } from 'vue';
+import SidebarComponent from '@/components/SidebarComponent.vue';
 import AddRolModal from '@/components/Modals/AddRolModal.vue';
 import ConfirmDelete from '@/components/ConfirmDelete.vue';
-import EditRolModal from '@/components/Modals/UpdateRolModal.vue'; // Asegúrate de importar el componente de edición
-import { useRolStore } from '@/stores/rolStore'
-import { onMounted, ref } from 'vue'
+import { useRolStore } from '@/stores/rolStore';
+import type { Rol } from '@/interfaces/rol';
 
-const rolStore = useRolStore()
-const isCreateModalOpen = ref(false);
-const isEditModalOpen = ref(false); // Estado para el modal de editar
-const selectedRole = ref(null); // Rol seleccionado para editar
-const confirmDeleteModal = ref(null);
-const rolesToDelete = ref<number | null>(null);
+const rolStore = useRolStore();
+const mostrarModal = ref(false);
+const confirmDeleteModal = ref<InstanceType<typeof ConfirmDelete> | null>(null);
 
-// Llamada a la API para obtener los roles
+// Estado para rol seleccionado (para edición o creación)
+const rolSeleccionado = ref<Rol>({
+  id_rol: 0,
+  rol: ''
+});
+
+// Cargar roles al montar el componente
 onMounted(async () => {
-  await rolStore.fetchRoles()
-})
+  await rolStore.fetchRoles();
+});
 
-// Función para abrir el modal de edición con el rol seleccionado
-const openEditModal = (role: IRol) => {
-  console.log("Rol seleccionado: " + role);
-  selectedRole.value = { ...role }; // Pasar el rol seleccionado al modal
-  isEditModalOpen.value = true; // Abrir el modal  de edición
-}
+// Abrir modal para crear un nuevo rol
+const abrirModalCrear = () => {
+  rolSeleccionado.value = { id_rol: 0, rol: '' };
+  mostrarModal.value = true;
+};
 
-// Función para confirmar la eliminación del rol
+// Abrir modal para editar un rol existente
+const abrirModalEditar = (role: Rol) => {
+  rolSeleccionado.value = { ...role };
+  mostrarModal.value = true;
+};
+
+// Cerrar modal y resetear datos
+const cerrarModal = () => {
+  mostrarModal.value = false;
+  rolSeleccionado.value = { id_rol: 0, rol: '' };
+};
+
+// Confirmar eliminación de un rol
 const confirmDelete = (id: number) => {
-  rolesToDelete.value = id;
-  confirmDeleteModal.value?.show(id);
-}
+  if (confirmDeleteModal.value) {
+    confirmDeleteModal.value.show(id);
+  } else {
+    console.error("El modal de confirmación no está disponible");
+  }
+};
 
 // Eliminar el rol
 const deleteRol = async (id: number) => {
   await rolStore.deleteRol(id);
-}
+};
 </script>

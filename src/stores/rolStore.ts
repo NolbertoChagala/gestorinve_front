@@ -53,20 +53,14 @@ export const useRolStore = defineStore('rol', () => {
     }
   }
 
-  const updateRol = async (id: number, rol: Partial<Rol>) => {
+  //Editar un rol
+  const updateRol = async (id_rol: number, rol: Partial<Rol>) => {
     isLoading.value = true;
     error.value = null;
+
     try {
-      console.log("🔄 Enviando solicitud para actualizar rol:", { id, rol });
-
-      // Llamada a la API
-      const response = await rolService.updateRol(id, rol);
-      console.log("✅ Respuesta recibida del servicio:", response);
-
-      // Aseguramos que la respuesta no sea undefined
-      if (!response) {
-        throw new Error("La respuesta de la API es vacía.");
-      }
+      await rolService.updateRol(id_rol, rol); // Llamada a la API para actualizar el rol
+      await fetchRoles(); // Refresca la lista de roles desde el backend
 
       toast.add({
         severity: 'success',
@@ -74,23 +68,9 @@ export const useRolStore = defineStore('rol', () => {
         detail: 'Rol actualizado correctamente.',
         life: 3000,
       });
-
-      await fetchRoles();
-
-      // Actualizar el rol en el array
-      const index = roles.value.findIndex((r) => r.id_rol === id);
-      if (index !== -1) {
-        roles.value[index] = response; // Se usa la respuesta de la API
-      }
-
-      // Si el rol actualizado es el actual, lo reemplazamos
-      if (currentRol.value?.id_rol === id) {
-        currentRol.value = response;
-      }
-
     } catch (err) {
       error.value = 'Error al actualizar el rol';
-      console.error('Error actualizando el rol:', err);
+      console.error(`Error al actualizar el rol con ID ${id_rol}:`, err);
 
       toast.add({
         severity: 'error',
@@ -101,7 +81,8 @@ export const useRolStore = defineStore('rol', () => {
     } finally {
       isLoading.value = false;
     }
- };
+  };
+
 
 
   // Eliminar un rol

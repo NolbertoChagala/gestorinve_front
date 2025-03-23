@@ -57,8 +57,8 @@ const handleUpdateRol = async () => {
     // Si la respuesta contiene el rol actualizado, cerramos el modal
     if (updatedRol) {
       emit('close'); // Cierra el modal
-      await rolStore.fetchRoles(); // Recarga la lista de roles después de la actualización
-    } else {
+      await rolStore.fetchRoles // Recarga la lista de roles después de la actualización
+    } else {();
       console.error("❌ No se pudo actualizar el rol.");
     }
   } catch (error) {

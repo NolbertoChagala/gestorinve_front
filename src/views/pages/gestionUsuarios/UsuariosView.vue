@@ -6,7 +6,8 @@
                     <h1 class="text-5xl font-bold">Gestión de Usuarios</h1>
                     <div class="bg-[#E5E5E5] border w-full mt-3"></div>
                     <div>
-                        <button class="bg-[#5656A7] text-white py-2 rounded-md mt-5 px-5 cursor-pointer">
+                      <!-- Se llama el modalRegister -->
+                        <button @click="mostrarModalRegister = true" class="bg-[#5656A7] text-white py-2 rounded-md mt-5 px-5 cursor-pointer">
                             <strong>+</strong> AÑADIR NUEVO USUARIO
                         </button>
                     </div>
@@ -50,6 +51,7 @@
                 </table>
             </div>
         </div>
+        <ModalRegister v-if="mostrarModalRegister" @cerrar="mostrarModalRegister = false" />
     </SidebarComponent>
 </template>
 
@@ -58,8 +60,10 @@ import SidebarComponent from '@/components/SidebarComponent.vue';
 import editarImage from '../../../assets/images/editarImage.svg'
 import eliminarImage from '../../../assets/images/eliminarImage.svg';
 import { useUserStore } from '@/stores/userStore';
-import { computed, onMounted } from 'vue';
+import ModalRegister from '@/components/ModalRegister.vue';
+import { computed, onMounted, ref } from 'vue';
 
+const mostrarModalRegister = ref<boolean>(false);
 const userStore = useUserStore();
 
 onMounted(async () => {

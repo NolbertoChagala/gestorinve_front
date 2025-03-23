@@ -43,32 +43,18 @@
             Iniciar Sesión
           </button>
         </div>
-
-        <p class="text-center text-sm mt-4">
-          ¿No tienes una cuenta?
-          <button
-            @click="mostrarModalRegister = true"
-            class="text-blue-500 hover:underline cursor-pointer"
-          >
-            Regístrate
-          </button>
-        </p>
       </div>
     </div>
   </div>
 
-  <!-- Modal de registro -->
-  <ModalRegister v-if="mostrarModalRegister" @cerrar="mostrarModalRegister = false" />
 </template>
 
 <script setup lang="ts">
 import { ref } from 'vue';
 import { useRouter } from 'vue-router';
-import ModalRegister from '@/components/ModalRegister.vue';
 import { CogIcon } from '@heroicons/vue/24/solid';
 import { login } from '@/services/AuthService';
 
-const mostrarModalRegister = ref<boolean>(false);
 const email = ref<string>('');
 const password = ref<string>('');
 const errorMessage = ref<string>('');

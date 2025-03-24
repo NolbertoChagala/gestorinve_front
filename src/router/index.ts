@@ -23,7 +23,7 @@ const router = createRouter({
     {
       path: '/movimientos',
       name: 'movimientos',
-      component: () => import('../views/pages/pedidos/PedidosView.vue')
+      component: () => import('../views/pages/movimientos/MovementsView.vue')
     },
     {
       path: '/usuarios',

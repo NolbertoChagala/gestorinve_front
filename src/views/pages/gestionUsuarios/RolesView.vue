@@ -1,59 +1,125 @@
 <template>
-    <SidebarComponent>
-        <div class="flex flex-col flex-1 items-center justify-center gap-5">
-            <div class="bg-white w-full h-[35vh] rounded-2xl shadow-xl">
-                <div class="pt-10 pl-8 pr-8">
-                    <h1 class="text-5xl font-bold">Gestión de Roles</h1>
-                    <div class="bg-[#E5E5E5] border w-full mt-3"></div>
-                    <div>
-                        <button class="bg-[#5656A7] text-white py-2 rounded-md mt-5 px-5 cursor-pointer">
-                            <strong>+</strong> AÑADIR NUEVO ROL
-                        </button>
-                    </div>
-                </div>
-            </div>
-            <div class="bg-white w-full h-full rounded-2xl shadow-xl">
-                <table class="w-full rounded-2xl overflow-hidden">
-                    <thead class="bg-gray-300">
-                        <tr class="text-gray-600">
-                            <th class="p-3">NOMBRE</th>
-                            <th class="p-3">EDITAR</th>
-                            <th class="p-3">ELIMINAR</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        <tr class="text-gray-500 border-b text-lg">
-                            <th class="p-3">Administrador</th>
-                            <th class="p-3">
-                                <div class="flex justify-center items-center">
-                                    <button
-                                        class="bg-[#5656A7] py-3 px-6 cursor-pointer flex justify-around items-center rounded-xl gap-3">
-                                        <img :src="editarImage" alt="botonEditar" class="w-6 h-6 filter invert">
-                                        <p class="text-sm text-white">Editar</p>
-                                    </button>
-                                </div>
-                            </th>
-                            <th class="p-3">
-                                <div class="flex justify-center items-center">
-                                    <button
-                                        class="bg-[#5656A7] py-3 px-6 cursor-pointer flex justify-around items-center rounded-xl gap-3">
-                                        <img :src="eliminarImage" alt="botonEliminar" class="w-6 h-6 filter invert">
-                                        <p class="text-sm text-white">Eliminar</p>
-                                    </button>
-
-                                </div>
-                            </th>
-                        </tr>
-                    </tbody>
-                </table>
-            </div>
+  <SidebarComponent>
+    <div class="bg-white w-full h-[28vh] rounded-2xl shadow-xl mb-8">
+      <div class="pt-10 pl-8 pr-8">
+        <h1 class="text-5xl font-bold text-gray-800">Roles</h1>
+        <div class="bg-gray-300 w-full h-[2px] mt-3"></div>
+        <div>
+          <button
+            @click="abrirModalCrear"
+            class="bg-blue-500 text-white py-3 px-6 rounded-lg mt-5 shadow-md hover:bg-blue-600 transition cursor-pointer"
+          >
+            <strong>+</strong> CREAR ROL
+          </button>
         </div>
-    </SidebarComponent>
+      </div>
+    </div>
+
+    <!-- Tabla para mostrar roles -->
+    <div class="w-full overflow-x-auto">
+      <div class="bg-white rounded-lg shadow-xl p-4">
+        <table class="table-fixed w-full border-collapse rounded-lg overflow-hidden min-w-[800px]">
+          <!-- Encabezado -->
+          <thead class="bg-blue-100 text-gray-700">
+            <tr>
+              <th class="w-2/6 py-3 px-4 text-center">Rol</th>
+              <th class="w-2/6 py-3 px-4 text-center">Acciones</th>
+            </tr>
+          </thead>
+
+          <!-- Cuerpo de la tabla -->
+          <tbody class="divide-y divide-gray-300">
+            <tr v-for="role in rolStore.roles" :key="role.id_rol" class="hover:bg-gray-100 even:bg-gray-50 transition">
+              <td class="py-3 px-4 text-center">{{ role.rol }}</td>
+              <td class="py-3 px-4 text-center space-x-2">
+                <!-- Botón Editar -->
+                <Button
+                  icon="pi pi-pencil"
+                  class="p-button-rounded p-button-warning"
+                  @click="abrirModalEditar(role)"
+                />
+
+                <!-- Botón Eliminar -->
+                <Button
+                  icon="pi pi-trash"
+                  class="p-button-rounded p-button-danger"
+                  @click="confirmDelete(role.id_rol)"
+                />
+              </td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+
+    <!-- Modal para agregar/editar rol -->
+    <AddRolModal
+      v-if="mostrarModal"
+      :is-open="mostrarModal"
+      :rol-para-editar="rolSeleccionado"
+      @close="cerrarModal"
+    />
+
+    <!-- Modal de confirmación para eliminar rol -->
+    <ConfirmDelete
+      ref="confirmDeleteModal"
+      @confirmDelete="deleteRol"
+    />
+  </SidebarComponent>
 </template>
 
 <script setup lang="ts">
+import { ref, onMounted } from 'vue';
 import SidebarComponent from '@/components/SidebarComponent.vue';
-import editarImage from '../../../assets/images/editarImage.svg'
-import eliminarImage from '../../../assets/images/eliminarImage.svg';
+import AddRolModal from '@/components/Modals/AddRolModal.vue';
+import ConfirmDelete from '@/components/ConfirmDelete.vue';
+import { useRolStore } from '@/stores/rolStore';
+import type { Rol } from '@/interfaces/rol';
 
+const rolStore = useRolStore();
+const mostrarModal = ref(false);
+const confirmDeleteModal = ref<InstanceType<typeof ConfirmDelete> | null>(null);
+
+// Estado para rol seleccionado (para edición o creación)
+const rolSeleccionado = ref<Rol>({
+  id_rol: 0,
+  rol: ''
+});
+
+// Cargar roles al montar el componente
+onMounted(async () => {
+  await rolStore.fetchRoles();
+});
+
+// Abrir modal para crear un nuevo rol
+const abrirModalCrear = () => {
+  rolSeleccionado.value = { id_rol: 0, rol: '' };
+  mostrarModal.value = true;
+};
+
+// Abrir modal para editar un rol existente
+const abrirModalEditar = (role: Rol) => {
+  rolSeleccionado.value = { ...role };
+  mostrarModal.value = true;
+};
+
+// Cerrar modal y resetear datos
+const cerrarModal = () => {
+  mostrarModal.value = false;
+  rolSeleccionado.value = { id_rol: 0, rol: '' };
+};
+
+// Confirmar eliminación de un rol
+const confirmDelete = (id: number) => {
+  if (confirmDeleteModal.value) {
+    confirmDeleteModal.value.show(id);
+  } else {
+    console.error("El modal de confirmación no está disponible");
+  }
+};
+
+// Eliminar el rol
+const deleteRol = async (id: number) => {
+  await rolStore.deleteRol(id);
+};
 </script>

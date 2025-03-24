@@ -6,7 +6,8 @@
                     <h1 class="text-5xl font-bold">Gestión de Usuarios</h1>
                     <div class="bg-[#E5E5E5] border w-full mt-3"></div>
                     <div>
-                        <button class="bg-[#5656A7] text-white py-2 rounded-md mt-5 px-5 cursor-pointer">
+                      <!-- Se llama el modalRegister -->
+                        <button @click="mostrarModalRegister = true" class="bg-[#5656A7] text-white py-2 rounded-md mt-5 px-5 cursor-pointer">
                             <strong>+</strong> AÑADIR NUEVO USUARIO
                         </button>
                     </div>
@@ -23,9 +24,9 @@
                         </tr>
                     </thead>
                     <tbody>
-                        <tr class="text-gray-500 border-b text-lg">
-                            <th class="p-3">Coto Chagala</th>
-                            <th class="p-3">Administrador</th>
+                        <tr v-for=" usuario in usuarios" :key=" usuario.id_usuario" class="text-gray-500 border-b text-lg">
+                            <th class="p-3">{{ usuario.nombre }}</th>
+                            <th class="p-3"></th>
                             <th class="p-3">
                                 <div class="flex justify-center items-center">
                                     <button
@@ -50,6 +51,7 @@
                 </table>
             </div>
         </div>
+        <ModalRegister v-if="mostrarModalRegister" @cerrar="mostrarModalRegister = false" />
     </SidebarComponent>
 </template>
 
@@ -57,5 +59,20 @@
 import SidebarComponent from '@/components/SidebarComponent.vue';
 import editarImage from '../../../assets/images/editarImage.svg'
 import eliminarImage from '../../../assets/images/eliminarImage.svg';
+import { useUserStore } from '@/stores/userStore';
+import ModalRegister from '@/components/ModalRegister.vue';
+import { computed, onMounted, ref } from 'vue';
+
+const mostrarModalRegister = ref<boolean>(false);
+const userStore = useUserStore();
+
+onMounted(async () => {
+  // console.log("Llmando fecthUsuarios")
+  await userStore.fetchUsuarios();
+  // console.log("Usuarios", userStore.usuarios)
+});
+
+const usuarios = computed(() => userStore.usuarios);
+
 
 </script>

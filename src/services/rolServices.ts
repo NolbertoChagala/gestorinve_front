@@ -21,7 +21,7 @@ export const createRol = async (data: any) => {
 //Editar un Rol
 export const updateRol = async (id: number, data: any) => {
     const response = await genericRequestAuthenticated(`/roles/${id}`, 'PUT', data);
-    return response.data;
+    return response;
 }
 
 //Eliminar un Rol por ID

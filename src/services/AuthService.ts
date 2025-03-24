@@ -9,7 +9,6 @@ interface RegisterCredentials {
   nombre: string
   correo: string
   contraseña: string
-  confirmarContraseña: string
 }
 
 export const login = async (credentials: Credentials) => {
@@ -34,10 +33,6 @@ export const login = async (credentials: Credentials) => {
 
 export const register = async (credentials: RegisterCredentials) => {
   try {
-    if (credentials.contraseña !== credentials.confirmarContraseña) {
-      throw new Error('Las contraseñas no coinciden')
-    }
-
     // Enviamos los datos al backend
     const response = await api.post('/auth/register', {
       nombre: credentials.nombre,
@@ -45,7 +40,6 @@ export const register = async (credentials: RegisterCredentials) => {
       contraseña: credentials.contraseña,
     })
 
-    // Retornamos los datos necesarios (puedes devolver un mensaje de éxito o usuario creado)
     return response.data
   } catch (error: any) {
     console.error('Error en el registro:', error)

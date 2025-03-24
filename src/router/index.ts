@@ -49,6 +49,10 @@ const router = createRouter({
       component: () => import('../views/pages/CategoryView.vue'),
     },
     {
+      path: '/:pathMatch(.*)*',
+      component: ()=>import ('../views/404.vue')
+    },
+    {
       path: '/detalles/:id',
       name: 'detalles',
       component: () => import('../views/pages/movimientos/MovementDetails.vue'),

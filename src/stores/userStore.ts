@@ -18,14 +18,17 @@ export const useUserStore = defineStore('user', () => {
   // Obtener todos los usuarios
   const fetchUsuarios = async () => {
     try {
+      console.log("Llamando api para obtener usuarios")
       usuarios.value = await userService.getUsers()
+      console.log("Usuarios obtenidos", usuarios.value)
     } catch (err) {
       handleError('Error al obtener los usuarios:', err)
     }
   }
 
+
   // Obtener un usuario por ID
-  const fetchUsuario = async (id: number) => {
+  const fetchUsuarioById = async (id: number) => {
     try {
       currentUser.value = await userService.getUserById(id)
     } catch (err) {
@@ -77,7 +80,7 @@ export const useUserStore = defineStore('user', () => {
     currentUser,
     error,
     fetchUsuarios,
-    fetchUsuario,
+    fetchUsuarioById,
     createUsuario,
     updateUsuario,
     deleteUsuario,

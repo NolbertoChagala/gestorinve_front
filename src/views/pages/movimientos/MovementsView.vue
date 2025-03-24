@@ -43,7 +43,7 @@
                             <td class="py-3 px-4 text-center">{{ movement.fecha_registro.split('T')[0] }}
                             </td>
                             <td class="py-3 px-4 text-center">
-                                <router-link :to="`/movimientos/${movement.id_movimiento}`"
+                                <router-link :to="`/detalles/${movement.id_movimiento}`"
                                     class="text-blue-600 hover:text-blue-800 flex items-center justify-center gap-2 transition">
                                     <i class="pi pi-eye"></i>
                                     <span class="underline">Ver Detalles</span>

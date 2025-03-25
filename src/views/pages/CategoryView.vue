@@ -1,6 +1,5 @@
 <template>
   <SidebarComponent>
-    <!-- Encabezado y Botón -->
     <div class="bg-white w-full h-[28vh] rounded-2xl shadow-xl mb-8">
       <div class="pt-10 pl-8 pr-8">
         <h1 class="text-5xl font-bold text-gray-800">Categorías</h1>
@@ -14,11 +13,10 @@
       </div>
     </div>
 
-    <!-- Contenedor con Scroll -->
     <div class="w-full overflow-x-auto">
-      <div class="bg-white rounded-lg shadow-xl p-4">
-        <table class="table-fixed w-full border-collapse rounded-lg overflow-hidden min-w-[800px]">
-          <!-- Encabezado -->
+      <div class="bg-white rounded-lg shadow-xl p-4 min-w-[800px]">
+        <table class="table-fixed w-full border-collapse rounded-lg overflow-hidden">
+
           <thead class="bg-blue-100 text-gray-700">
             <tr>
               <th class="w-1/6 py-3 px-4 text-center">ID</th>
@@ -29,14 +27,15 @@
 
           <!-- Cuerpo de la tabla -->
           <tbody class="divide-y divide-gray-300">
-            <tr v-for="category in categoryStore.categories" :key="category.id_categoria"
+            <tr v-for="category in paginatedCategories" :key="category.id_categoria"
               class="hover:bg-gray-100 even:bg-gray-50 transition">
 
               <td class="py-3 px-4 text-center">{{ category.id_categoria }}</td>
               <td class="py-3 px-4 text-center">{{ category.categoria }}</td>
               <td class="py-3 px-4 text-center space-x-2">
                 <!-- Botón Editar -->
-                <Button icon="pi pi-pencil" class="p-button-rounded p-button-warning" />
+                <Button icon="pi pi-pencil" class="p-button-rounded p-button-warning"
+                  @click="openEditModal(category)" />
 
                 <!-- Botón Eliminar -->
                 <Button icon="pi pi-trash" class="p-button-rounded p-button-danger"
@@ -48,9 +47,18 @@
       </div>
     </div>
 
+    <!-- Paginador Componente -->
+    <div class="flex justify-center mt-4">
+      <Paginator :rows="rowsPerPage" :totalRecords="categoryStore.categories.length" 
+        :rowsPerPageOptions="[10, 20, 30]" @page="onPageChange" />
+    </div>
 
     <!-- Modal de Crear Categoría -->
     <AddCategoryModal :isOpen="isCreateModalOpen" @close="isCreateModalOpen = false" />
+
+    <!-- Modal de Editar Categoría -->
+    <EditCategoryModal :isOpen="isEditModalOpen" :selectedCategory="selectedCategory"
+      @close="isEditModalOpen = false" />
 
     <!-- Componente de Confirmación de Eliminación -->
     <ConfirmDelete ref="confirmDeleteModal" @confirmDelete="deleteCategory" />
@@ -60,9 +68,11 @@
 <script setup lang="ts">
 import SidebarComponent from '@/components/SidebarComponent.vue';
 import AddCategoryModal from '@/components/Modals/AddCategoryModal.vue';
+import EditCategoryModal from '@/components/Modals/EditCategoryModal.vue';
 import { useCategoryStore } from '@/stores/categoryStore';
-import { ref, onMounted } from 'vue';
+import { ref, onMounted, computed } from 'vue';
 import ConfirmDelete from '@/components/ConfirmDelete.vue';
+import type { ICategory } from '@/interfaces/ICategory';
 
 const categoryStore = useCategoryStore();
 
@@ -75,6 +85,14 @@ onMounted(() => {
 const isCreateModalOpen = ref(false);
 const confirmDeleteModal = ref(null);
 const categoryToDelete = ref<number | null>(null);
+const isEditModalOpen = ref(false);
+const selectedCategory = ref<ICategory | null>(null);
+
+// Abre el modal de edición con la categoría seleccionada
+const openEditModal = (category: ICategory) => {
+  selectedCategory.value = category;
+  isEditModalOpen.value = true;
+};
 
 // Muestra el modal de confirmación con el ID de la categoría
 const confirmDelete = (id: number) => {
@@ -85,5 +103,22 @@ const confirmDelete = (id: number) => {
 // Elimina la categoría si el usuario confirma
 const deleteCategory = async (id: number) => {
   await categoryStore.removeCategory(id);
+};
+
+// Estado para manejar la paginación
+const currentPage = ref(0);
+const rowsPerPage = ref(10);
+
+// Obtener las categorías paginadas
+const paginatedCategories = computed(() => {
+  const start = currentPage.value * rowsPerPage.value;
+  const end = start + rowsPerPage.value;
+  return categoryStore.categories.slice(start, end);
+});
+
+// Manejar el cambio de página
+const onPageChange = (event: { page: number, rows: number }) => {
+  currentPage.value = event.page;
+  rowsPerPage.value = event.rows;
 };
 </script>

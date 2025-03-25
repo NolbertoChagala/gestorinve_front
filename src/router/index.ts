@@ -23,7 +23,7 @@ const router = createRouter({
     {
       path: '/movimientos',
       name: 'movimientos',
-      component: () => import('../views/pages/pedidos/PedidosView.vue')
+      component: () => import('../views/pages/movimientos/MovementsView.vue')
     },
     {
       path: '/usuarios',
@@ -51,6 +51,11 @@ const router = createRouter({
     {
       path: '/:pathMatch(.*)*',
       component: ()=>import ('../views/404.vue')
+    },
+    {
+      path: '/detalles/:id',
+      name: 'detalles',
+      component: () => import('../views/pages/movimientos/MovementDetails.vue'),
     }
   ],
 })

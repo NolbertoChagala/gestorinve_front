@@ -60,6 +60,8 @@ export const logout = async () => {
   try {
     await api.post('/auth/logout');
     localStorage.removeItem('token');
+    localStorage.removeItem('user');
+    localStorage.removeItem('role');
     window.location.href = '/login';
   } catch (error) {
     console.error('Error al cerrar sesión:', error);

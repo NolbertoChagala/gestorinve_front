@@ -76,15 +76,18 @@
        throw new Error("La respuesta del backend no contiene el token o los datos del usuario.");
      }
      localStorage.setItem('token', token);
+     console.log('Token:', token);
+     localStorage.setItem('rol', usuario.rol.rol);
+     console.log('Role:', usuario.rol.rol);
      localStorage.setItem('user', usuario.nombre);
 
      // Redirigir según el rol
      if (usuario.rol.rol === 'Administrador') {
        console.log("Redirigiendo a /inventario");
-       router.push('/inventario'); // Redirige a stock si es Administrador
+       router.push('/usuarios'); // Redirige a stock si es Administrador
      } else if (usuario.rol.rol === 'Usuario') {
        console.log("Redirigiendo a /welcome");
-       router.push('/welcome'); // Redirige a welcome si es usuario común
+       router.push('/inventario'); // Redirige a welcome si es usuario común
      } else {
        console.log("Redirigiendo a la página de inicio");
        router.push('/login'); // Si no es ninguno de los 2 roles lo redirige a login

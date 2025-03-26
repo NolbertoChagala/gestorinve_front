@@ -9,6 +9,7 @@ import Lara from '@primeuix/themes/lara';
 import ConfirmationService from 'primevue/confirmationservice';
 import ConfirmDialog from 'primevue/confirmdialog';
 import Button from 'primevue/button';
+import Paginator from 'primevue/paginator';
 
 
 import App from './App.vue'
@@ -34,5 +35,6 @@ app.use(ConfirmationService);
 app.component('ConfirmDialog', ConfirmDialog);
 app.use(ToastService);
 app.component('Button', Button);
+app.component('Paginator', Paginator);
 
 app.mount('#app')

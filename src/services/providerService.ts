@@ -19,9 +19,8 @@ export const createProvider = async (data: IProvider) => {
     return response;
 }
 
-
 //* Editar un proveedor por ID
-export const updateProvider = async (id: number, data: any) => {
+export const updateProvider = async (id: number, data: Partial<IProvider>) => {
     const response = await genericRequestAuthenticated(`/providers/${id}`, 'PUT', data);
     return response;
 }

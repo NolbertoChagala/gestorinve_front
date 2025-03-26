@@ -35,7 +35,6 @@ export const login = async (credentials: Credentials) => {
 
 export const register = async (credentials: RegisterCredentials) => {
   try {
-    // Enviamos los datos al backend
     const response = await api.post('/auth/register', {
       nombre: credentials.nombre,
       correo: credentials.correo,
@@ -56,7 +55,12 @@ export const register = async (credentials: RegisterCredentials) => {
   }
 }
 
-export const logout = () => {
-  localStorage.removeItem('token')
-  window.location.href = '/login'
-}
+export const logout = async () => {
+  try {
+    await api.post('/auth/logout');
+    localStorage.removeItem('token');
+    window.location.href = '/login';
+  } catch (error) {
+    console.error('Error al cerrar sesión:', error);
+  }
+};

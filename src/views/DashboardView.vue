@@ -146,10 +146,11 @@
                         </tr>
                     </thead>
                     <tbody class="divide-y divide-gray-300">
-                        <tr class="hover:bg-gray-100 even:bg-gray-50 transition">
-                            <th class="py-3 px-4 text-center">x</th>
-                            <th class="py-3 px-4 text-center">xx</th>
-                            <th class="py-3 px-4 text-center">xxx</th>
+                        <tr v-for="product in inventoryStore.products" :key="product.id_producto"
+                            :class="{ 'low-stock': product.stock <= 10 }">
+                            <th class="py-3 px-4 text-center">{{ product.id_producto }}</th>
+                            <th class="py-3 px-4 text-center">{{ product.producto }}</th>
+                            <th class="py-3 px-4 text-center">{{ product.stock }}</th>
                         </tr>
                     </tbody>
                 </table>
@@ -210,6 +211,7 @@ const inventoryCount = computed(() => {
     return inventoryStore.products.length;
 })
 
+
 onMounted(async () => {
     await providerStore.fetchProviders();
     await movementStore.fetchMovements();
@@ -220,3 +222,10 @@ onMounted(async () => {
 })
 
 </script>
+
+<style scoped>
+.low-stock {
+    background-color: red;
+    color: white;
+}
+</style>

@@ -5,10 +5,12 @@ interface Credentials {
   contraseña: string
 }
 
-interface RegisterCredentials {
+export interface RegisterCredentials {
+  id_usuario?: number
   nombre: string
   correo: string
   contraseña: string
+  rol: string
 }
 
 export const login = async (credentials: Credentials) => {
@@ -38,6 +40,7 @@ export const register = async (credentials: RegisterCredentials) => {
       nombre: credentials.nombre,
       correo: credentials.correo,
       contraseña: credentials.contraseña,
+      rol: credentials.rol
     })
 
     return response.data

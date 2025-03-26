@@ -30,14 +30,11 @@
             <tr v-for="role in rolStore.roles" :key="role.id_rol" class="hover:bg-gray-100 even:bg-gray-50 transition">
               <td class="py-3 px-4 text-center">{{ role.rol }}</td>
               <td class="py-3 px-4 text-center space-x-2">
-
                 <Button
                   icon="pi pi-pencil"
                   class="p-button-rounded p-button-warning"
                   @click="abrirModalEditar(role)"
                 />
-
-
                 <Button
                   icon="pi pi-trash"
                   class="p-button-rounded p-button-danger"

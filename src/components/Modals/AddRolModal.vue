@@ -1,16 +1,16 @@
 <template>
-  <BaseModal 
-      :is-open="isOpen" 
+  <BaseModal
+      :is-open="isOpen"
       :title="values.id_rol ? 'Editar Rol' : 'Añadir Rol'"
       :confirmButtonText="values.id_rol ? 'Actualizar' : 'Guardar'"
       @close="closeModal"
       @confirm="guardarRol"
   >
       <label class="block">Nombre del Rol</label>
-      <input 
-          v-model="rol" 
-          type="text" 
-          placeholder="Ej: Administrador" 
+      <input
+          v-model="rol"
+          type="text"
+          placeholder="Ej: Administrador"
           class="w-full border p-2 rounded-md"
           :class="{'border-red-500': errors.rol}"
       />
@@ -74,4 +74,5 @@ const guardarRol = handleSubmit(async () => {
       console.error("Error al guardar el rol:", error);
   }
 });
+
 </script>

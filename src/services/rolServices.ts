@@ -3,6 +3,7 @@ import { genericRequestAuthenticated } from "@/util/genericRequest";
 //Obtener todo los Roles
 export const getRoles = async () => {
     const response = await genericRequestAuthenticated('/roles', 'GET');
+    console.log("API response:", response )
     return response.data;
 }
 

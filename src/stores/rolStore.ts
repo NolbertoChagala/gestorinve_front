@@ -17,6 +17,7 @@ export const useRolStore = defineStore('rol', () => {
     error.value = null
     try {
       roles.value = await rolService.getRoles()
+      console.log("Rol obtenidos", roles.value)
     } catch (err) {
       error.value = 'Error al cargar los roles'
       console.error('Error fetching roles:', err)
@@ -59,9 +60,8 @@ export const useRolStore = defineStore('rol', () => {
     error.value = null;
 
     try {
-      await rolService.updateRol(id_rol, rol); // Llamada a la API para actualizar el rol
-      await fetchRoles(); // Refresca la lista de roles desde el backend
-
+      await rolService.updateRol(id_rol, rol);
+      await fetchRoles();
       toast.add({
         severity: 'success',
         summary: 'Éxito',

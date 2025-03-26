@@ -64,28 +64,24 @@ const router = createRouter({
 })
 
 
-// Guard de navegación global para verificar el token y el rol
+
 router.beforeEach((to, from, next) => {
   const token = localStorage.getItem('token');
-  const role = localStorage.getItem('rol'); // Asegúrate de que 'rol' esté bien almacenado
-
-  // Si la ruta requiere autenticación
+  const role = localStorage.getItem('rol');
   if (to.meta.requiresAuth) {
-    // Si no hay token, redirigir al login
     if (!token) {
       next({ name: 'login' });
     } else {
-      // Verifica si el rol está permitido para la ruta
       const allowedRoles = to.meta.roles || [];
       if (allowedRoles.length && !allowedRoles.includes(role)) {
-        // Si el rol no está permitido, redirigir a una página predeterminada
-        next({ name: 'inventario' }); // Redirigir a una página por defecto
+
+        next({ name: 'inventario' });
       } else {
         next();
       }
     }
   } else {
-    next(); // Si no se requiere autenticación, continuar
+    next();
   }
 });
 

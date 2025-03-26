@@ -1,66 +1,55 @@
-import api from '../util/axiosInstance'
-
-interface Credentials {
-  correo: string
-  contraseña: string
-}
-
-export interface RegisterCredentials {
-  id_usuario?: number
-  nombre: string
-  correo: string
-  contraseña: string
-  rol: string
-}
+import { genericRequest, genericRequestAuthenticated } from '../util/genericRequest'
+import type { Credentials, RegisterCredentials } from '@/interfaces/IAuth'
 
 export const login = async (credentials: Credentials) => {
   try {
-    const response = await api.post('/auth/login', credentials)
-    const token = response.data.token
-    if (token) {
-      localStorage.setItem('token', token)
+    const response = await genericRequest('/auth/login', 'POST', credentials)
+
+    // Asumiendo que tu backend devuelve { token, usuario } en response.data
+    const token = response.token
+    const usuario = response.usuario
+
+    if (!token) {
+      throw new Error('No se recibió token en la respuesta')
     }
-    return response.data
+
+    localStorage.setItem('token', token)
+    return { token, usuario }
   } catch (error: any) {
     console.error('Error en login:', error)
-    if (error.response) {
-      if (error.response.status === 401) {
-        throw new Error('Credenciales inválidas')
-      }
-      throw new Error(error.response.data?.message || 'Error en el login')
+    if (error.error) { // Esto cambia según tu genericRequest original
+      throw new Error(error.message)
     }
-    throw new Error('Error en el login')
+    throw error
   }
 }
 
 export const register = async (credentials: RegisterCredentials) => {
   try {
-    const response = await api.post('/auth/register', {
+    const response = await genericRequestAuthenticated('/auth/register', 'POST', {
       nombre: credentials.nombre,
       correo: credentials.correo,
       contraseña: credentials.contraseña,
       rol: credentials.rol
     })
-
-    return response.data
+    return response
   } catch (error: any) {
     console.error('Error en el registro:', error)
-    if (error.response) {
-      if (error.response.status === 400) {
-        throw new Error(error.response.data?.message || 'Error en el registro')
-      }
-      throw new Error(error.response.data?.message || 'Error en el registro')
+    if (error.error) {
+      throw new Error(error.message)
     }
-    throw new Error('Error en el registro')
+    throw error
   }
 }
 
 export const logout = async () => {
   try {
-    await api.post('/auth/logout');
-    localStorage.removeItem('token');
-    window.location.href = '/login';
+    await genericRequestAuthenticated('/auth/logout', 'POST')
+    localStorage.removeItem('token')
+    localStorage.removeItem('rol')
+    localStorage.removeItem('user')
   } catch (error) {
-    console.error('Error al cerrar sesión:', error);
+    console.error('Error al cerrar sesión:', error)
+    throw error
   }
-};
+}

@@ -60,6 +60,8 @@
                             <th class="py-3 px-4 text-center">Producto</th>
                             <th class="py-3 px-4 text-center">Cantidad</th>
                             <th class="py-3 px-4 text-center">Precio Unitario</th>
+                            <th class="py-3 px-4 text-center">Stock</th>
+                            <th class="py-3 px-4 text-center">Nuevo Stock</th>
                             <th v-if="movement?.tipo_movimiento === 'Salida'" class="py-3 px-4 text-center">Total</th>
                         </tr>
                     </thead>
@@ -69,6 +71,8 @@
                             <td class="py-3 px-4 text-center">{{ producto.producto_nombre }}</td>
                             <td class="py-3 px-4 text-center">{{ producto.cantidad }}</td>
                             <td class="py-3 px-4 text-center">$ {{ producto.precio_unitario }}</td>
+                            <td class="py-3 px-4 text-center">{{ producto.stock_anterior }}</td>
+                            <td class="py-3 px-4 text-center">{{ producto.stock_nuevo }}</td>
                             <td v-if="movement?.tipo_movimiento === 'Salida'" class="py-3 px-4 text-center">$ {{
                                 producto.total }}</td>
                         </tr>

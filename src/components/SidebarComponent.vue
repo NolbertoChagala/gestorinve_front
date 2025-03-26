@@ -7,9 +7,8 @@ const isCollapsed = ref(false);
 const showUserMenu = ref(false);
 
 const userName = ref('');
-const userRole = ref(''); // Guardamos el rol aquí
+const userRole = ref('');
 
-// Lista de items del menú con roles
 const menuItems = [
   { label: "Dashboard", icon: "pi pi-home", route: "/",roles: ['Administrador', 'Usuario'] },
   { label: "Usuarios", icon: "pi pi-users", route: "/usuarios", roles: ['Administrador'] }, // solo visible para Administradores
@@ -20,7 +19,7 @@ const menuItems = [
   { label: "Movimientos", icon: "pi pi-history", route: "/movimientos", roles: ['Administrador', 'Usuario'] },
 ];
 
-const filteredMenuItems = ref([]); // Menú filtrado
+const filteredMenuItems = ref([]);
 
 onMounted(() => {
   const user = localStorage.getItem('user');
@@ -30,7 +29,6 @@ onMounted(() => {
   }
   if (role) {
     userRole.value = role;
-    // Filtrar los items del menú solo si el rol está disponible
     filteredMenuItems.value = menuItems.filter(item => item.roles && item.roles.includes(role));
   }
 });

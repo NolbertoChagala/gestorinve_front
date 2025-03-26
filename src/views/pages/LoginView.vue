@@ -60,8 +60,10 @@
  const errorMessage = ref<string>('');
  const router = useRouter();
 
+ let userData: any = null;
+
  const loginUser = async () => {
-   errorMessage.value = ''; // Reset error message
+   errorMessage.value = '';
    try {
      const response = await login({ correo: email.value, contraseña: password.value });
      console.log("Respuesta completa del backend:", response);
@@ -81,16 +83,17 @@
      console.log('Role:', usuario.rol.rol);
      localStorage.setItem('user', usuario.nombre);
 
-     // Redirigir según el rol
+     userData = usuario;
+
      if (usuario.rol.rol === 'Administrador') {
        console.log("Redirigiendo a /inventario");
-       router.push('/usuarios'); // Redirige a stock si es Administrador
+       router.push('/usuarios');
      } else if (usuario.rol.rol === 'Usuario') {
        console.log("Redirigiendo a /welcome");
-       router.push('/inventario'); // Redirige a welcome si es usuario común
+       router.push('/inventario');
      } else {
        console.log("Redirigiendo a la página de inicio");
-       router.push('/login'); // Si no es ninguno de los 2 roles lo redirige a login
+       router.push('/login');
      }
    } catch (error: any) {
      console.error("Error de login:", error.message);

@@ -16,7 +16,7 @@ export const getUserById = async (id: number) => {
 
 // Crear un usuario
 export const createUser = async (data: any) => {
-    const response = await genericRequestAuthenticated('/users/Crear', 'POST', data);
+    const response = await genericRequestAuthenticated('/users', 'POST', data);
     return response;
 }
 

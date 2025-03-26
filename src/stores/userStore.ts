@@ -2,7 +2,7 @@ import { defineStore } from 'pinia'
 import { ref } from 'vue'
 import { useToast } from 'primevue/usetoast'
 import type { User } from '@/interfaces/user'
-import { getUsers, getUserById, updateUser, deleteUser } from "@/services/userService";
+import { getUsers, getUserById, createUser ,updateUser, deleteUser } from "@/services/userService";
 
 export const useUserStore = defineStore('user', () => {
   const usuarios = ref<User[]>([])
@@ -35,6 +35,32 @@ export const useUserStore = defineStore('user', () => {
     } catch (err) {
       error.value = 'Error al obtener el usuario.';
       console.error(error.value, err);
+    } finally {
+      isLoading.value = false;
+    }
+  };
+
+  const createUsers = async (usuario: User) => {
+    isLoading.value = true;
+    error.value = null;
+    try {
+      await createUser(usuario);
+      toast.add({
+        severity: 'success',
+        summary: 'Éxito',
+        detail: 'Usuario creado correctamente.',
+        life: 3000,
+      });
+      await fetchUsers();
+    } catch (err) {
+      error.value = 'Error al crear el usuario.';
+      console.error(error.value, err);
+      toast.add({
+        severity: 'error',
+        summary: 'Error',
+        detail: error.value,
+        life: 3000,
+      });
     } finally {
       isLoading.value = false;
     }
@@ -102,6 +128,7 @@ export const useUserStore = defineStore('user', () => {
     error,
     fetchUsers,
     fetchUserById,
+    createUsers,
     updateUsers,
     deleteUsers,
   }

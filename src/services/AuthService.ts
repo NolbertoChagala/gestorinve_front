@@ -1,5 +1,5 @@
 import { genericRequest, genericRequestAuthenticated } from '../util/genericRequest'
-import type { Credentials, RegisterCredentials } from '@/interfaces/IAuth'
+import type { Credentials } from '@/interfaces/IAuth'
 
 export const login = async (credentials: Credentials) => {
   try {
@@ -18,24 +18,6 @@ export const login = async (credentials: Credentials) => {
   } catch (error: any) {
     console.error('Error en login:', error)
     if (error.error) { // Esto cambia según tu genericRequest original
-      throw new Error(error.message)
-    }
-    throw error
-  }
-}
-
-export const register = async (credentials: RegisterCredentials) => {
-  try {
-    const response = await genericRequestAuthenticated('/auth/register', 'POST', {
-      nombre: credentials.nombre,
-      correo: credentials.correo,
-      contraseña: credentials.contraseña,
-      rol: credentials.rol
-    })
-    return response
-  } catch (error: any) {
-    console.error('Error en el registro:', error)
-    if (error.error) {
       throw new Error(error.message)
     }
     throw error

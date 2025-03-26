@@ -1,8 +1,8 @@
 <template>
   <BaseModal
     :is-open="isOpen"
-    :title="isEditMode ? 'Editar Usuario' : 'Registrar Usuario'"
-    :confirmButtonText="isEditMode ? 'Actualizar' : 'Registrar'"
+    :title="isEditMode ? 'Editar Usuario' : 'Crear Usuario'"
+    :confirmButtonText="isEditMode ? 'Actualizar' : 'Crear'"
     @close="closeModal"
     @confirm="guardarUsuario"
   >
@@ -64,11 +64,7 @@ import { useRolStore } from '@/stores/rolStore'
 import { useUserStore } from '@/stores/userStore'
 import { useForm } from 'vee-validate'
 import * as yup from 'yup'
-import { register } from '@/services/AuthService'
-import type { RegisterCredentials } from '@/services/AuthService'
-import { useToast } from 'vue-toastification'
 
-const toast = useToast()
 const rolStore = useRolStore()
 const userStore = useUserStore()
 const emit = defineEmits(['close', 'confirm'])
@@ -98,7 +94,7 @@ const validationSchema = yup.object({
   rol: yup.string().required('Selecciona un rol'),
 })
 
-const { values, errors, handleSubmit, defineField, setValues, resetForm } = useForm<RegisterCredentials>({
+const { values, errors, handleSubmit, defineField, setValues, resetForm } = useForm({
   validationSchema,
   initialValues: {
     id_usuario: 0,
@@ -157,9 +153,7 @@ const closeModal = () => {
 }
 
 const guardarUsuario = handleSubmit(async () => {
-  console.log("✅ Entrando a guardarUsuario...")
   try {
-    console.log('Valores del formulario antes de enviar:', values)
     const datosEnvio = {
       nombre: values.nombre,
       correo: values.correo,
@@ -169,25 +163,13 @@ const guardarUsuario = handleSubmit(async () => {
     }
 
     if (values.id_usuario) {
-      console.log('Actualizando usuario con ID:', values.id_usuario)
       await userStore.updateUsers(values.id_usuario, datosEnvio)
     } else {
-      console.log('Registrando nuevo usuario:', datosEnvio)
-      const response = await register(datosEnvio)
-      console.log('Respuesta del servidor:', response)
-
-      if (response && response.token) {
-        console.log('Usuario registrado exitosamente, recargando lista...')
-        toast.success('Usuario registrado correctamente')
-        userStore.fetchUsers()
-      } else {
-        throw new Error('Error en el servidor')
-      }
+      await userStore.createUsers(datosEnvio)
     }
     closeModal()
   } catch (error) {
     console.error('Error al guardar el usuario:', error)
-    toast.error('Error al guardar el usuario')
   }
 })
 

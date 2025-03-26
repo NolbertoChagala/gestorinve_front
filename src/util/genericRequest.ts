@@ -1,3 +1,5 @@
+import type { ILog } from '@/interfaces/ILog'
+import { registerLog } from '@/services/logService'
 import api from './axiosInstance'
 import axios from 'axios'
 
@@ -21,10 +23,24 @@ export const genericRequest = async (
     })
     return response.data
   } catch (error: any) {
-    const errorMessage = error.response?.data || error.message || 'Error desconocido'
-    console.error(`Error en ${method} ${url}: ${errorMessage}`)
+    const errorMessage = error.response?.data?.message || error.message || 'Error desconocido'
+    const statusCode = error.response?.status || 500;
+    const endpoint = url;
 
-    return { error: true, message: error.response?.data || "Error desconocido" };
+    const log: ILog = {
+      mensaje: errorMessage,
+      stack_trace: error.stack || 'No stack trace disponible',
+      endpoint: endpoint,
+      status_code: statusCode,
+    }
+
+    // Llamamos al servicio para registrar el log
+    await registerLog(log);
+
+    // Mostramos el error en la consola para depuración
+    console.error(`Error en ${method} ${url}: ${errorMessage}`);
+
+    return { error: true, message: errorMessage };
   }
 }
 
@@ -42,9 +58,23 @@ export const genericRequestAuthenticated = async (
     })
     return response.data;
   } catch (error: any) {
-    const errorMessage = error.response?.data || error.message || 'Error desconocido'
-    console.error(`Error en ${method} ${url}: ${errorMessage}`)
+    const errorMessage = error.response?.data?.message || error.message || 'Error desconocido'
+    const statusCode = error.response?.status || 500;
+    const endpoint = url;
 
-    return { error: true, message: error.response?.data || "Error desconocido" };
+    const log: ILog = {
+      mensaje: errorMessage,
+      stack_trace: error.stack || 'No stack trace disponible',
+      endpoint: endpoint,
+      status_code: statusCode,
+    }
+
+    // Llamamos al servicio para registrar el log
+    await registerLog(log);
+
+    // Mostramos el error en la consola para depuración
+    console.error(`Error en ${method} ${url}: ${errorMessage}`);
+
+    return { error: true, message: errorMessage };
   }
 }

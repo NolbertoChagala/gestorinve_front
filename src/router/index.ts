@@ -56,6 +56,11 @@ const router = createRouter({
       path: '/detalles/:id',
       name: 'detalles',
       component: () => import('../views/pages/movimientos/MovementDetails.vue'),
+    },
+    {
+      path: '/registro',
+      name: 'registro-movimiento',
+      component: () => import('../views/pages/movimientos/RegisterMovement.vue'),
     }
   ],
 })

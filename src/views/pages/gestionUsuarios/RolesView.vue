@@ -15,7 +15,6 @@
       </div>
     </div>
 
-    <!-- Tabla para mostrar roles -->
     <div class="w-full overflow-x-auto">
       <div class="bg-white rounded-lg shadow-xl p-4">
         <table class="table-fixed w-full border-collapse rounded-lg overflow-hidden min-w-[800px]">
@@ -27,19 +26,15 @@
             </tr>
           </thead>
 
-          <!-- Cuerpo de la tabla -->
           <tbody class="divide-y divide-gray-300">
             <tr v-for="role in rolStore.roles" :key="role.id_rol" class="hover:bg-gray-100 even:bg-gray-50 transition">
               <td class="py-3 px-4 text-center">{{ role.rol }}</td>
               <td class="py-3 px-4 text-center space-x-2">
-                <!-- Botón Editar -->
                 <Button
                   icon="pi pi-pencil"
                   class="p-button-rounded p-button-warning"
                   @click="abrirModalEditar(role)"
                 />
-
-                <!-- Botón Eliminar -->
                 <Button
                   icon="pi pi-trash"
                   class="p-button-rounded p-button-danger"
@@ -80,30 +75,29 @@ const rolStore = useRolStore();
 const mostrarModal = ref(false);
 const confirmDeleteModal = ref<InstanceType<typeof ConfirmDelete> | null>(null);
 
-// Estado para rol seleccionado (para edición o creación)
 const rolSeleccionado = ref<Rol>({
   id_rol: 0,
   rol: ''
 });
 
-// Cargar roles al montar el componente
+
 onMounted(async () => {
   await rolStore.fetchRoles();
 });
 
-// Abrir modal para crear un nuevo rol
+
 const abrirModalCrear = () => {
   rolSeleccionado.value = { id_rol: 0, rol: '' };
   mostrarModal.value = true;
 };
 
-// Abrir modal para editar un rol existente
+
 const abrirModalEditar = (role: Rol) => {
   rolSeleccionado.value = { ...role };
   mostrarModal.value = true;
 };
 
-// Cerrar modal y resetear datos
+
 const cerrarModal = () => {
   mostrarModal.value = false;
   rolSeleccionado.value = { id_rol: 0, rol: '' };
@@ -118,7 +112,7 @@ const confirmDelete = (id: number) => {
   }
 };
 
-// Eliminar el rol
+
 const deleteRol = async (id: number) => {
   await rolStore.deleteRol(id);
 };

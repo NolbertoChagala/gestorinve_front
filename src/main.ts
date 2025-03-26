@@ -19,6 +19,7 @@ import 'primeicons/primeicons.css';
 
 const app = createApp(App)
 app.use(Toast)
+app.use(ToastService)
 
 app.use(createPinia())
 app.use(router)

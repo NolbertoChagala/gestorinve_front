@@ -1,91 +1,108 @@
 import { defineStore } from 'pinia'
 import { ref } from 'vue'
+import { useToast } from 'primevue/usetoast'
 import type { User } from '@/interfaces/user'
-import * as userService from '@/services/userService'
+import { getUsers, getUserById, updateUser, deleteUser } from "@/services/userService";
 
 export const useUserStore = defineStore('user', () => {
-  // Estado
-  const usuarios = ref<User[]>([]) // Lista de usuarios
-  const currentUser = ref<User | null>(null) // Usuario actual
-  const error = ref<string | null>(null) // Estado para manejar errores
+  const usuarios = ref<User[]>([])
+  const currentUser = ref<User | null>(null)
+  const isLoading = ref(false)
+  const error = ref<string | null>(null)
+  const toast = useToast()
 
-
-  const handleError = (message: string, err: any) => {
-    console.error(message, err)
-    error.value = `${message} ${err.response?.data?.message || err.message}`
-  }
-
-  // Obtener todos los usuarios
-  const fetchUsuarios = async () => {
+  const fetchUsers = async () => {
+    isLoading.value = true;
+    error.value = null;
     try {
-      console.log("Llamando api para obtener usuarios")
-      usuarios.value = await userService.getUsers()
-      console.log("Usuarios obtenidos", usuarios.value)
+        const data = await getUsers();
+        console.log("Datos obtenidos de la API:", data);
+        usuarios.value = data;
     } catch (err) {
-      handleError('Error al obtener los usuarios:', err)
+        error.value = 'Error al obtener los usuarios.';
+        console.error('Error fetching usuarios:', err);
+    } finally {
+        isLoading.value = false;
     }
-  }
+  };
 
-
-  // Obtener un usuario por ID
-  const fetchUsuarioById = async (id: number) => {
+  const fetchUserById = async (id: number) => {
+    isLoading.value = true;
+    error.value = null;
     try {
-      currentUser.value = await userService.getUserById(id)
+      const user = await getUserById(id);
+      currentUser.value = user;
     } catch (err) {
-      handleError('Error al obtener los datos del usuario:', err)
+      error.value = 'Error al obtener el usuario.';
+      console.error(error.value, err);
+    } finally {
+      isLoading.value = false;
     }
-  }
+  };
 
-  // Crear un usuario
-  const createUsuario = async (usuario: User) => {
+  const updateUsers = async (id_usuario: number, usuario: Partial<User>) => {
+    isLoading.value = true;
+    error.value = null;
     try {
-      const newUser = await userService.createUser(usuario)
-      if (newUser) {
-        usuarios.value.push(newUser)
+      await updateUser(id_usuario, usuario);
+      toast.add({
+        severity: 'success',
+        summary: 'Éxito',
+        detail: 'Usuario actualizado correctamente.',
+        life: 3000,
+      });
+      await fetchUsers();
+    } catch (err) {
+      error.value = 'Error al actualizar el usuario.';
+      console.error(error.value, err);
+      toast.add({
+        severity: 'error',
+        summary: 'Error',
+        detail: error.value,
+        life: 3000,
+      });
+    } finally {
+      isLoading.value = false;
+    }
+  };
+
+  const deleteUsers = async (id: number) => {
+    isLoading.value = true;
+    error.value = null;
+    try {
+      await deleteUser(id);
+      toast.add({
+        severity: 'success',
+        summary: 'Éxito',
+        detail: 'Usuario eliminado exitosamente.',
+        life: 3000,
+      });
+      await fetchUsers();
+      if (currentUser.value?.id_usuario === id) {
+        currentUser.value = null;
       }
     } catch (err) {
-      handleError('Error al crear el usuario:', err)
+      error.value = 'Error al eliminar el usuario.';
+      console.error(error.value, err);
+      toast.add({
+        severity: 'error',
+        summary: 'Error',
+        detail: error.value,
+        life: 3000,
+      });
+    } finally {
+      isLoading.value = false;
     }
-  }
-
-  // Actualizar un usuario
-  const updateUsuario = async (usuario: User) => {
-    try {
-      const updatedUser = await userService.updateUser(usuario.id_usuario, usuario)
-      const index = usuarios.value.findIndex((u) => u.id_usuario === usuario.id_usuario)
-      if (index !== -1) {
-        usuarios.value[index] = updatedUser
-      }
-    } catch (err) {
-      handleError('Error al actualizar el usuario:', err)
-    }
-  }
-
-  // Eliminar un usuario por ID
-  const deleteUsuario = async (id: number) => {
-    try {
-      await userService.deleteUser(id)
-      usuarios.value = usuarios.value.filter((u) => u.id_usuario !== id)
-    } catch (err) {
-      handleError('Error al eliminar el usuario:', err)
-    }
-  }
-
-  const allUsuarios = () => usuarios.value
-  const getCurrentUser = () => currentUser.value
-  const getError = () => error.value
+  };
 
   return {
     usuarios,
     currentUser,
+    isLoading,
     error,
-    fetchUsuarios,
-    fetchUsuarioById,
-    createUsuario,
-    updateUsuario,
-    deleteUsuario,
-    allUsuarios,
-    getCurrentUser,
-    getError,
+    fetchUsers,
+    fetchUserById,
+    updateUsers,
+    deleteUsers,
   }
 })

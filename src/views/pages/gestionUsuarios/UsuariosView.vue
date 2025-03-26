@@ -1,78 +1,102 @@
 <template>
-        <SidebarComponent>
-        <div class="flex flex-col flex-1 items-center justify-center gap-5">
-            <div class="bg-white w-full h-[35vh] rounded-2xl shadow-xl">
-                <div class="pt-10 pl-8 pr-8">
-                    <h1 class="text-5xl font-bold">Gestión de Usuarios</h1>
-                    <div class="bg-[#E5E5E5] border w-full mt-3"></div>
-                    <div>
-                      <!-- Se llama el modalRegister -->
-                        <button @click="mostrarModalRegister = true" class="bg-[#5656A7] text-white py-2 rounded-md mt-5 px-5 cursor-pointer">
-                            <strong>+</strong> AÑADIR NUEVO USUARIO
-                        </button>
-                    </div>
-                </div>
-            </div>
-            <div class="bg-white w-full h-full rounded-2xl shadow-xl">
-                <table class="w-full rounded-2xl overflow-hidden">
-                    <thead class="bg-gray-300">
-                        <tr class="text-gray-600">
-                            <th class="p-3">NOMBRE</th>
-                            <th class="p-3">ROL</th>
-                            <th class="p-3">EDITAR</th>
-                            <th class="p-3">ELIMINAR</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        <tr v-for=" usuario in usuarios" :key=" usuario.id_usuario" class="text-gray-500 border-b text-lg">
-                            <th class="p-3">{{ usuario.nombre }}</th>
-                            <th class="p-3"></th>
-                            <th class="p-3">
-                                <div class="flex justify-center items-center">
-                                    <button
-                                        class="bg-[#5656A7] py-3 px-6 cursor-pointer flex justify-around items-center rounded-xl gap-3">
-                                        <img :src="editarImage" alt="botonEditar" class="w-6 h-6 filter invert">
-                                        <p class="text-sm text-white">Editar</p>
-                                    </button>
-                                </div>
-                            </th>
-                            <th class="p-3">
-                                <div class="flex justify-center items-center">
-                                    <button
-                                        class="bg-[#5656A7] py-3 px-6 cursor-pointer flex justify-around items-center rounded-xl gap-3">
-                                        <img :src="eliminarImage" alt="botonEliminar" class="w-6 h-6 filter invert">
-                                        <p class="text-sm text-white">Eliminar</p>
-                                    </button>
-
-                                </div>
-                            </th>
-                        </tr>
-                    </tbody>
-                </table>
-            </div>
+  <SidebarComponent>
+    <div class="bg-white w-full h-[28vh] rounded-2xl shadow-xl mb-8">
+      <div class="pt-10 pl-8 pr-8">
+        <h1 class="text-5xl font-bold text-gray-800">Gestión de Usuarios</h1>
+        <div class="bg-gray-300 w-full h-[2px] mt-3"></div>
+        <div>
+          <button
+            @click="mostrarModalRegister = true; isEditMode = false"
+            class="bg-blue-500 text-white py-3 px-6 rounded-lg mt-5 shadow-md hover:bg-blue-600 transition cursor-pointer"
+          >
+            <strong>+</strong> CREAR USUARIO
+          </button>
         </div>
-        <ModalRegister v-if="mostrarModalRegister" @cerrar="mostrarModalRegister = false" />
-    </SidebarComponent>
+      </div>
+    </div>
+
+    <div class="w-full overflow-x-auto">
+      <div class="bg-white rounded-lg shadow-xl p-4">
+        <table class="table-fixed w-full border-collapse rounded-lg overflow-hidden min-w-[800px]">
+          <thead class="bg-blue-100 text-gray-700">
+            <tr>
+              <th class="w-2/6 py-3 px-4 text-center">Nombre</th>
+              <th class="w-2/6 py-3 px-4 text-center">Correo</th>
+              <th class="w-2/6 py-3 px-4 text-center">Rol</th>
+              <th class="w-2/6 py-3 px-4 text-center">Acciones</th>
+            </tr>
+          </thead>
+
+          <tbody class="divide-y divide-gray-300">
+            <tr
+              v-for="usuario in userStore.usuarios"
+              :key="usuario.id_usuario"
+              class="hover:bg-gray-100 even:bg-gray-50 transition"
+            >
+              <td class="py-3 px-4 text-center">{{ usuario.nombre }}</td>
+              <td class="py-3 px-4 text-center">{{ usuario.correo }}</td>
+              <td class="py-3 px-4 text-center">{{ usuario.rol }}</td>
+              <td class="py-3 px-4 text-center space-x-2">
+                <Button
+                  icon="pi pi-pencil"
+                  class="p-button-rounded p-button-warning"
+                  @click="editarUsuario(usuario)"
+                />
+                <Button
+                  icon="pi pi-trash"
+                  class="p-button-rounded p-button-danger"
+                  @click="confirmDelete(usuario.id_usuario)"
+                />
+              </td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+
+    <ConfirmDelete ref="confirmDeleteModal" @confirmDelete="deleteUsers" />
+    <!-- Pasar correctamente los datos del usuario a editar -->
+    <ModalRegister
+      v-if="mostrarModalRegister"
+      :usuarioParaEditar="usuarioParaEditar"
+      :isEditMode="isEditMode"
+      @close="mostrarModalRegister = false"
+    />
+  </SidebarComponent>
 </template>
 
 <script setup lang="ts">
-import SidebarComponent from '@/components/SidebarComponent.vue';
-import editarImage from '../../../assets/images/editarImage.svg'
-import eliminarImage from '../../../assets/images/eliminarImage.svg';
-import { useUserStore } from '@/stores/userStore';
-import ModalRegister from '@/components/ModalRegister.vue';
-import { computed, onMounted, ref } from 'vue';
+import SidebarComponent from '@/components/SidebarComponent.vue'
+import { useUserStore } from '@/stores/userStore'
+import ModalRegister from '@/components/ModalRegister.vue'
+import ConfirmDelete from '@/components/ConfirmDelete.vue'
+import { onMounted, ref } from 'vue'
 
-const mostrarModalRegister = ref<boolean>(false);
-const userStore = useUserStore();
+const mostrarModalRegister = ref(false)
+const usuarioParaEditar = ref<any>(null)
+const userStore = useUserStore()
+const confirmDeleteModal = ref<InstanceType<typeof ConfirmDelete> | null>(null)
+const isEditMode = ref(false)
 
 onMounted(async () => {
-  // console.log("Llmando fecthUsuarios")
-  await userStore.fetchUsuarios();
-  // console.log("Usuarios", userStore.usuarios)
-});
+  await userStore.fetchUsers()
+})
 
-const usuarios = computed(() => userStore.usuarios);
+const confirmDelete = (id: number) => {
+  if (confirmDeleteModal.value) {
+    confirmDeleteModal.value.show(id)
+  } else {
+    console.error('El modal de confirmación no está disponible')
+  }
+}
 
+const deleteUsers = async (id: number) => {
+  await userStore.deleteUsers(id)
+}
 
+const editarUsuario = (usuario: any) => {
+  usuarioParaEditar.value = { ...usuario }
+  isEditMode.value = true
+  mostrarModalRegister.value = true
+}
 </script>

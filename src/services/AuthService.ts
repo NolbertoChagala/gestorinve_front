@@ -56,7 +56,12 @@ export const register = async (credentials: RegisterCredentials) => {
   }
 }
 
-export const logout = () => {
-  localStorage.removeItem('token')
-  window.location.href = '/login'
-}
+export const logout = async () => {
+  try {
+    await api.post('/auth/logout');
+    localStorage.removeItem('token');
+    window.location.href = '/login';
+  } catch (error) {
+    console.error('Error al cerrar sesión:', error);
+  }
+};

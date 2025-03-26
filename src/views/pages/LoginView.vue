@@ -75,12 +75,8 @@
      if (!token || !usuario) {
        throw new Error("La respuesta del backend no contiene el token o los datos del usuario.");
      }
-
-     console.log("Datos del usuario:", usuario);
-     console.log("Rol del usuario:", usuario.rol);
-     localStorage.setItem('IdUsuario', usuario.id_usuario);
-     localStorage.setItem('rolUsuario', usuario.rol.rol);
      localStorage.setItem('token', token);
+     localStorage.setItem('user', usuario.nombre);
 
      // Redirigir según el rol
      if (usuario.rol.rol === 'Administrador') {

@@ -4,5 +4,4 @@ export interface IProvider {
     telefono: string;
     correo: string;
     direccion: string;
-    //productos: Inventario[];
 }

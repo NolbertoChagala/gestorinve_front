@@ -7,6 +7,7 @@
                 <div class="bg-gray-300 w-full h-[2px] mt-3"></div>
                 <div>
                     <button
+                        @click="$router.push('/registro')"
                         class="bg-blue-500 text-white py-3 px-6 rounded-lg mt-5 shadow-md hover:bg-blue-600 transition cursor-pointer">
                         <strong>+</strong> REGISTRAR MOVIMIENTO
                     </button>

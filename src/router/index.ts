@@ -64,6 +64,11 @@ const router = createRouter({
       name: 'dashboard',
       component: () => import('../views/DashboardView.vue'),
       meta: { requiresAuth: true },
+    },
+    {
+      path: '/registro',
+      name: 'registro-movimiento',
+      component: () => import('../views/pages/movimientos/RegisterMovement.vue'),
     }
   ],
 })

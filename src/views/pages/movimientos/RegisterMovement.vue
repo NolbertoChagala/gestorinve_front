@@ -5,7 +5,7 @@
             <i class="pi pi-arrow-left text-lg"></i>
             <span class="ml-2 font-medium text-lg">Regresar</span>
         </div>
-        
+
         <div class="flex gap-6 h-screen">
             <!-- Sección izquierda: Registrar movimiento -->
             <div class="w-1/2 bg-white shadow-lg rounded-lg p-4 flex flex-col h-full">
@@ -46,7 +46,7 @@
 
             <!-- Sección de productos disponibles -->
             <div class="w-1/2">
-                <ProductsList @addProduct="addProduct"/> 
+                <ProductsList @addProduct="addProduct"/>
             </div>
 
         </div>
@@ -63,9 +63,11 @@ import DataTable from "primevue/datatable";
 import Column from "primevue/column";
 import { useMovementStore } from "@/stores/movementStore";
 import { useToast } from "primevue/usetoast";
+import { useAuthStore } from "@/stores/authStore";
 
 const movementStore = useMovementStore();
 const toast = useToast();
+const authStore=useAuthStore();
 
 const selectedProducts = ref([]);
 const movementType = ref("Entrada");
@@ -91,17 +93,19 @@ const registerMovement = async () => {
 
   // Construir el objeto que espera el servidor
   const movementData = {
-    usuario_id: 2,
+    usuario_id: authStore.userId,
     tipo_movimiento: movementType.value,
     detalles: selectedProducts.value.map((product) => ({
       producto_id: product.id_producto,
       cantidad: product.cantidad,
     })),
   };
+  console.log("User ID:", authStore.userId);
+  console.log("Datos enviados al backend:", JSON.stringify(movementData, null, 2));
 
   try {
     const response = await movementStore.addMovement(movementData);
-    
+
     if (response.success) {
       selectedProducts.value = [];
       movementType.value = "Entrada";
@@ -109,6 +113,6 @@ const registerMovement = async () => {
   } catch (error) {
     console.error(error);
   }
-  
+
 };
 </script>

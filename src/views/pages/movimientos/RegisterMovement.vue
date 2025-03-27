@@ -57,13 +57,16 @@
 import SidebarComponent from "@/components/SidebarComponent.vue";
 import ProductsList from "./ProductsList.vue";
 import { ref } from "vue";
-import { useInventoryStore } from "@/stores/inventoryStore";
 import Dropdown from "primevue/dropdown";
 import Button from "primevue/button";
 import DataTable from "primevue/datatable";
 import Column from "primevue/column";
+import { useMovementStore } from "@/stores/movementStore";
+import { useToast } from "primevue/usetoast";
 
-const inventoryStore = useInventoryStore();
+const movementStore = useMovementStore();
+const toast = useToast();
+
 const selectedProducts = ref([]);
 const movementType = ref("Entrada");
 
@@ -80,11 +83,32 @@ const removeProduct = (index) => {
     selectedProducts.value.splice(index, 1);
 };
 
-const registerMovement = () => {
-    if (selectedProducts.value.length === 0) {
-        alert("Debes seleccionar al menos un producto.");
-        return;
+const registerMovement = async () => {
+  if (selectedProducts.value.length === 0) {
+    toast.add({ severity: "warn", summary: "Atención", detail: "Debes seleccionar al menos un producto", life: 3000 });
+    return;
+  }
+
+  // Construir el objeto que espera el servidor
+  const movementData = {
+    usuario_id: 2,
+    tipo_movimiento: movementType.value,
+    detalles: selectedProducts.value.map((product) => ({
+      producto_id: product.id_producto,
+      cantidad: product.cantidad,
+    })),
+  };
+
+  try {
+    const response = await movementStore.addMovement(movementData);
+    
+    if (response.success) {
+      selectedProducts.value = [];
+      movementType.value = "Entrada";
     }
-    console.log("Movimiento registrado:", movementType.value, selectedProducts.value);
+  } catch (error) {
+    console.error(error);
+  }
+  
 };
 </script>

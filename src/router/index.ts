@@ -58,7 +58,17 @@ const router = createRouter({
       path: '/detalles/:id',
       name: 'detalles',
       component: () => import('../views/pages/movimientos/MovementDetails.vue'),
+    },
+    {
+      path: '/dashboard',
+      name: 'dashboard',
+      component: () => import('../views/DashboardView.vue'),
       meta: { requiresAuth: true },
+    },
+    {
+      path: '/registro',
+      name: 'registro-movimiento',
+      component: () => import('../views/pages/movimientos/RegisterMovement.vue'),
     }
   ],
 })

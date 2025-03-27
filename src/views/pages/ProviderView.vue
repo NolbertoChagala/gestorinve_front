@@ -32,7 +32,7 @@
                             <td class="py-3 px-4 text-center">{{ provider.telefono }}</td>
                             <td class="py-3 px-4 text-center">{{ provider.correo }}</td>
                             <td class="py-3 px-4 text-center">{{ provider.direccion }}</td>
-                            <td class="py-3 px-4 text-center space-x-6">
+                            <td class="py-3 px-4 text-center space-x-2">
                                 <Button icon="pi pi-pencil" class="p-button-rounded p-button-warning"
                                     @click="abrirModalEditar(provider)" />
 

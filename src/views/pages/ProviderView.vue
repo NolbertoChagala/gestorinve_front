@@ -33,13 +33,11 @@
                             <td class="py-3 px-4 text-center">{{ provider.correo }}</td>
                             <td class="py-3 px-4 text-center">{{ provider.direccion }}</td>
                             <td class="py-3 px-4 text-center space-x-6">
-                                <button @click="abrirModalEditar(provider)" class="p-button-rounded p-button-warning cursor-pointer">
-                                    <i class="pi pi-pencil"></i>
-                                </button>
-                                <button @click="confirmDelete(provider.id_proveedor)"
-                                    class="p-button-rounded p-button-danger cursor-pointer">
-                                    <i class="pi pi-trash"></i>
-                                </button>
+                                <Button icon="pi pi-pencil" class="p-button-rounded p-button-warning"
+                                    @click="abrirModalEditar(provider)" />
+
+                                <Button icon="pi pi-trash" class="p-button-rounded p-button-danger"
+                                    @click="confirmDelete(provider.id_proveedor)" />
                             </td>
                         </tr>
                     </tbody>

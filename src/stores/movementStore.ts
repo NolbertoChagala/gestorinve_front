@@ -51,6 +51,7 @@ export const useMovementStore = defineStore('movements', () => {
                 errorMessage.value = response.message;
                 toast.add({ severity: "warn", summary: "Atención", detail: response.message, life: 3000 });
             }
+            return response;
         } catch (error) {
             errorMessage.value = "Error al registrar el movimiento";
             console.error(error);

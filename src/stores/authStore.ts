@@ -10,8 +10,7 @@ export const useAuthStore = defineStore('auth', () => {
   const errorMessage = ref('')
   const loading = ref(false)
 
-  const router = useRouter() // Router dentro del store
-  // Función para hacer login y redirigir según el rol
+  const router = useRouter()
   const loginUser = async (credentials: Credentials) => {
     loading.value = true
     errorMessage.value = ''
@@ -28,11 +27,10 @@ export const useAuthStore = defineStore('auth', () => {
       localStorage.setItem('rol', response.usuario.rol.rol)
       localStorage.setItem('user', response.usuario.nombre)
 
-      // Redirigir después del login
       if (response.usuario.rol.rol === 'admin') {
-        router.push('/usuario') // Ruta para administradores
+        router.push('/usuario')
       } else {
-        router.push('/inventario') // Ruta para usuarios normales
+        router.push('/inventario')
       }
     } catch (error: any) {
       errorMessage.value = error.message || 'Hubo un problema al iniciar sesión. Intente de nuevo'
@@ -42,7 +40,6 @@ export const useAuthStore = defineStore('auth', () => {
     }
   }
 
-  // Función para hacer logout
   const logoutUser = async () => {
     try {
       await logout()
@@ -53,7 +50,7 @@ export const useAuthStore = defineStore('auth', () => {
       localStorage.removeItem('rol')
       localStorage.removeItem('user')
 
-      router.push('/') // Redirigir al login después de cerrar sesión
+      router.push('/') 
     } catch (error) {
       console.error('Error al cerrar sesión:', error)
       throw error

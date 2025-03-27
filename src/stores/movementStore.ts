@@ -2,13 +2,16 @@ import { defineStore } from "pinia";
 import { ref } from "vue";
 import type { IMovement } from "@/interfaces/IMovement";
 import type { IMovementDetails } from "@/interfaces/IMovementDetails";
-import { getMovements, getMovementDetails } from "@/services/movementService";
+import type { IRegisterMovement } from "@/interfaces/IRegisterMovement";
+import { useToast } from "primevue/usetoast";
+import { getMovements, getMovementDetails, registerMovement } from "@/services/movementService";
 
 export const useMovementStore = defineStore('movements', () => {
     const movements = ref<IMovement[]>([]);
     const movementDetails = ref<IMovementDetails | null>(null);
     const isLoading = ref(false);
     const errorMessage = ref("");
+    const toast = useToast();
 
     // Función para obtener todos los movimientos
     const fetchMovements = async () => {
@@ -35,10 +38,31 @@ export const useMovementStore = defineStore('movements', () => {
         }
     };
 
+    // Registrar un nuevo movimiento
+    const addMovement = async (movementData: IRegisterMovement) => {
+        errorMessage.value = "";
+        
+        try {
+            const response = await registerMovement(movementData);
+            if (response.success) {
+                toast.add({ severity: "success", summary: "Éxito", detail: response.message, life: 3000 });
+                fetchMovements(); // Recargar lista de movimientos
+            } else {
+                errorMessage.value = response.message;
+                toast.add({ severity: "warn", summary: "Atención", detail: response.message, life: 3000 });
+            }
+        } catch (error) {
+            errorMessage.value = "Error al registrar el movimiento";
+            console.error(error);
+            toast.add({ severity: "error", summary: "Error", detail: "Error al registrar el movimiento", life: 3000 });
+        }
+    };
+
     return{
         movements,
         fetchMovements,
         fetchMovementDetails,
-        movementDetails
+        movementDetails,
+        addMovement
     }
 })

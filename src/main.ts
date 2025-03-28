@@ -10,6 +10,7 @@ import ConfirmationService from 'primevue/confirmationservice';
 import ConfirmDialog from 'primevue/confirmdialog';
 import Button from 'primevue/button';
 import Paginator from 'primevue/paginator';
+import { initToast } from "./utils/toast"; // Importamos la función
 
 
 import App from './App.vue'
@@ -20,6 +21,7 @@ import 'primeicons/primeicons.css';
 const app = createApp(App)
 app.use(Toast)
 app.use(ToastService)
+initToast(app); // Inicializamos la instancia de toast
 
 app.use(createPinia())
 app.use(router)

@@ -64,7 +64,9 @@ import Column from "primevue/column";
 import { useMovementStore } from "@/stores/movementStore";
 import { useToast } from "primevue/usetoast";
 import { useAuthStore } from "@/stores/authStore";
+import { useRouter } from "vue-router";
 
+const router = useRouter();
 const movementStore = useMovementStore();
 const toast = useToast();
 const authStore=useAuthStore();
@@ -100,7 +102,6 @@ const registerMovement = async () => {
       cantidad: product.cantidad,
     })),
   };
-  console.log("User ID:", authStore.userId);
   console.log("Datos enviados al backend:", JSON.stringify(movementData, null, 2));
 
   try {
@@ -109,6 +110,7 @@ const registerMovement = async () => {
     if (response.success) {
       selectedProducts.value = [];
       movementType.value = "Entrada";
+      router.push('/movimientos');
     }
   } catch (error) {
     console.error(error);

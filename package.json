@@ -20,6 +20,7 @@
     "@vee-validate/yup": "^4.15.0",
     "@vueuse/core": "^12.8.2",
     "axios": "^1.8.2",
+    "chart.js": "^4.4.8",
     "pinia": "^3.0.1",
     "primeicons": "^7.0.0",
     "primevue": "^4.3.2",

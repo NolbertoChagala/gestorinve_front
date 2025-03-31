@@ -69,6 +69,12 @@ const router = createRouter({
       path: '/registro',
       name: 'registro-movimiento',
       component: () => import('../views/pages/movimientos/RegisterMovement.vue'),
+    },
+    {
+      path: '/logs',
+      name: 'logs',
+      component: () => import('../views/pages/LogsView.vue'),
+      meta: { requiresAuth: true, roles: ['Administrador'] }
     }
   ],
 })

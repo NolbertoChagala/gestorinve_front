@@ -1,8 +1,8 @@
-import { genericRequest } from "@/util/genericRequest";
+import { genericRequestAuthenticated, genericRequest } from "@/util/genericRequest";
 import type { ILog } from "@/interfaces/ILog";
 
 export const getLogs = async () => {
-    const response = await genericRequest('/logs', 'GET');
+    const response = await genericRequestAuthenticated('/logs', 'GET');
     return response;
 }
 
@@ -12,6 +12,6 @@ export const registerLog = async (log: ILog) => {
 }
 
 export const deleteLogs = async () => {
-    const response = await genericRequest('/logs', 'DELETE');
+    const response = await genericRequestAuthenticated('/logs', 'DELETE');
     return response;
 }

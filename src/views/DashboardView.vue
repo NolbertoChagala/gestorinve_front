@@ -213,14 +213,14 @@ const setChartData = () => {
         datasets: [
             {
                 label: 'Stock de Productos',
-                backgroundColor: products.map(p => 
-                    p.stock <= criticalStock ? 
-                    documentStyle.getPropertyValue('--p-red-600') : 
+                backgroundColor: products.map(p =>
+                    p.stock <= criticalStock ?
+                    documentStyle.getPropertyValue('--p-red-600') :
                     documentStyle.getPropertyValue('--p-cyan-500')
                 ),
-                borderColor: products.map(p => 
-                    p.stock <= criticalStock ? 
-                    documentStyle.getPropertyValue('--p-red-800') : 
+                borderColor: products.map(p =>
+                    p.stock <= criticalStock ?
+                    documentStyle.getPropertyValue('--p-red-800') :
                     documentStyle.getPropertyValue('--p-gray-200')
                 ),
                 borderWidth: 1,
@@ -247,16 +247,16 @@ const setChartOptions = () => {
                     label: (context: TooltipItem<'bar'>) => {
                         const stock = context.raw as number;
                         const price = inventoryStore.products.find(p => p.producto === context.label)?.precio_unitario || 0;
-                        
+
                         const message = [
                             `Stock: ${stock} unidades`,
                             `Precio unitario: $${price.toFixed(2)}`
                         ];
-                        
+
                         if (stock <= criticalStock) {
                             message.push('¡Este producto se está agotando!');
                         }
-                        
+
                         return message;
                     }
                 },

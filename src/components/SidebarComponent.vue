@@ -17,6 +17,7 @@ const menuItems = [
   { label: "Inventario", icon: "pi pi-box", route: "/inventario", roles: ['Administrador', 'Usuario'] },
   { label: "Proveedores", icon: "pi pi-truck", route: "/proveedores", roles: ['Administrador','Usuario'] },
   { label: "Movimientos", icon: "pi pi-history", route: "/movimientos", roles: ['Administrador', 'Usuario'] },
+  { label: "Logs", icon: "pi pi-exclamation-triangle", route: "/logs", roles: ['Administrador'] },
 ];
 
 const filteredMenuItems = ref([]);

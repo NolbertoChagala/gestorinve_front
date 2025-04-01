@@ -1,7 +1,7 @@
 <template>
     <SidebarComponent>
         <div class="flex flex-wrap justify-center gap-8 mb-4 p-5">
-            <div class="w-full md:w-[calc(50%-16px)] xl:w-[calc(25%-24px)]">
+            <div class="w-full md:w-[calc(50%-16px)] xl:w-[calc(25%-24px)]" v-if="userRole === 'Administrador'">
                 <div class="bg-white rounded-2xl flex flex-col overflow-hidden h-full">
                     <div class="flex items-center p-4">
                         <li class="pi pi-users !text-5xl text-blue-500"></li>
@@ -20,7 +20,7 @@
                 </div>
             </div>
 
-            <div class="w-full md:w-[calc(50%-16px)] xl:w-[calc(25%-24px)]">
+            <div class="w-full md:w-[calc(50%-16px)] xl:w-[calc(25%-24px)]" v-if="userRole === 'Administrador'">
                 <div class="bg-white rounded-2xl flex flex-col overflow-hidden h-full">
                     <div class="flex items-center p-4">
                         <li class="pi pi-shield !text-5xl text-purple-500"></li>
@@ -134,27 +134,8 @@
                 </div>
             </div>
         </div>
-
-        <div class="w-full overflow-x-auto">
-            <div class="bg-white rounded-lg shadow-xl p-4">
-                <table class="table-fixed w-full border-collapse rounded-lg overflow-hidden min-w-[800px]">
-                    <thead class="bg-blue-100 text-gray-700">
-                        <tr>
-                            <th class="w-1/6 py-3 px-4 text-center">Id Producto</th>
-                            <th class="w-1/6 py-3 px-4 text-center">Producto</th>
-                            <th class="w-1/6 py-3 px-4 text-center">Cantidad</th>
-                        </tr>
-                    </thead>
-                    <tbody class="divide-y divide-gray-300">
-                        <tr v-for="product in inventoryStore.products" :key="product.id_producto"
-                            :class="{ 'low-stock': product.stock <= 10 }">
-                            <th class="py-3 px-4 text-center">{{ product.id_producto }}</th>
-                            <th class="py-3 px-4 text-center">{{ product.producto }}</th>
-                            <th class="py-3 px-4 text-center">{{ product.stock }}</th>
-                        </tr>
-                    </tbody>
-                </table>
-            </div>
+        <div class="card">
+            <Chart type="bar" :data="chartData" :options="chartOptions" class="h-[30rem]" />
         </div>
     </SidebarComponent>
 </template>
@@ -167,7 +148,12 @@ import { useCategoryStore } from '@/stores/categoryStore';
 import { useUserStore } from '@/stores/userStore';
 import { useRolStore } from '@/stores/rolStore';
 import { useInventoryStore } from '@/stores/inventoryStore';
-import { onMounted, computed } from 'vue';
+import { onMounted, computed, ref } from 'vue';
+import Chart from 'primevue/chart';
+import type { TooltipItem } from 'chart.js';
+
+const userRole = ref(localStorage.getItem('rol') || '');
+
 
 const providerStore = useProviderStore();
 const movementStore = useMovementStore();
@@ -211,6 +197,117 @@ const inventoryCount = computed(() => {
     return inventoryStore.products.length;
 })
 
+const chartData = ref();
+const chartOptions = ref();
+
+const setChartData = () => {
+    const documentStyle = getComputedStyle(document.documentElement);
+
+    const products = inventoryStore.products;
+    const productNames = products.map(p => p.producto);
+    const productQuantities = products.map(p => p.stock);
+    const criticalStock = 10; // Nivel de stock crítico
+
+    return {
+        labels: productNames,
+        datasets: [
+            {
+                label: 'Stock de Productos',
+                backgroundColor: products.map(p => 
+                    p.stock <= criticalStock ? 
+                    documentStyle.getPropertyValue('--p-red-600') : 
+                    documentStyle.getPropertyValue('--p-cyan-500')
+                ),
+                borderColor: products.map(p => 
+                    p.stock <= criticalStock ? 
+                    documentStyle.getPropertyValue('--p-red-800') : 
+                    documentStyle.getPropertyValue('--p-gray-200')
+                ),
+                borderWidth: 1,
+                data: productQuantities
+            }
+        ]
+    };
+}
+
+const setChartOptions = () => {
+    const documentStyle = getComputedStyle(document.documentElement);
+    const textColor = documentStyle.getPropertyValue('--p-text-color');
+    const textColorSecondary = documentStyle.getPropertyValue('--p-text-muted-color');
+    const surfaceBorder = documentStyle.getPropertyValue('--p-content-border-color');
+    const criticalStock = 10;
+
+    return {
+        maintainAspectRatio: false,
+        aspectRatio: 0.8,
+        plugins: {
+            tooltip: {
+                callbacks: {
+                    title: (context: TooltipItem<'bar'>[]) => context[0].label,
+                    label: (context: TooltipItem<'bar'>) => {
+                        const stock = context.raw as number;
+                        const price = inventoryStore.products.find(p => p.producto === context.label)?.precio_unitario || 0;
+                        
+                        const message = [
+                            `Stock: ${stock} unidades`,
+                            `Precio unitario: $${price.toFixed(2)}`
+                        ];
+                        
+                        if (stock <= criticalStock) {
+                            message.push('¡Este producto se está agotando!');
+                        }
+                        
+                        return message;
+                    }
+                },
+                displayColors: false,
+                backgroundColor: documentStyle.getPropertyValue('--p-surface-0'),
+                titleColor: documentStyle.getPropertyValue('--p-primary-500'),
+                bodyColor: textColor,
+                borderColor: surfaceBorder,
+                borderWidth: 1,
+                padding: 12
+            },
+            legend: {
+                labels: {
+                    color: textColor,
+                    usePointStyle: true,
+                    pointStyle: 'rectRounded'
+                }
+            }
+        },
+        scales: {
+            x: {
+                title: {
+                    display: true,
+                    text: 'Cantidad en stock',
+                    color: textColorSecondary
+                },
+                grid: {
+                    color: surfaceBorder,
+                    drawBorder: false
+                },
+                ticks: {
+                    color: textColorSecondary
+                }
+            },
+            y: {
+                ticks: {
+                    color: textColorSecondary,
+                    autoSkip: false
+                },
+                grid: {
+                    color: surfaceBorder,
+                    drawBorder: false
+                }
+            }
+        },
+        hover: {
+            mode: 'nearest',
+            intersect: true
+        }
+    };
+};
 
 onMounted(async () => {
     await providerStore.fetchProviders();
@@ -219,6 +316,8 @@ onMounted(async () => {
     await userStore.fetchUsers();
     await rolStore.fetchRoles();
     await inventoryStore.fetchProducts();
+    chartData.value = setChartData();
+    chartOptions.value = setChartOptions();
 })
 
 </script>

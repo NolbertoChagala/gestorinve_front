@@ -1,6 +1,5 @@
 import axios from "axios";
 import { jwtDecode } from "jwt-decode";
-import { showToast } from "@/utils/toast";
 
 const API_BASE_URL = "https://localhost:7126/api";
 
@@ -18,7 +17,6 @@ api.interceptors.request.use(
                 const currentTime = Math.floor(Date.now() / 1000);
 
                 if (decoded.exp && decoded.exp < currentTime) {
-                    showToast("Tu sesión ha expirado. Inicia sesión nuevamente.", "error");
                     localStorage.removeItem("token");
                     localStorage.removeItem("rol");
                     localStorage.removeItem("usuario");
@@ -45,7 +43,6 @@ api.interceptors.response.use(
     (response) => response,
     (error) => {
         if (error.response?.status === 401) {
-            showToast("Sesión expirada. Vuelve a iniciar sesión.", "error");
             localStorage.removeItem("token");
             localStorage.removeItem("rol");
             localStorage.removeItem("user");

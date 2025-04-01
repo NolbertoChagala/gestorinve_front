@@ -1,6 +1,6 @@
 import axios from "axios";
 import { jwtDecode } from "jwt-decode";
-import { showToast } from "@/utils/toast"; // Importamos la función del toast
+import { showToast } from "@/utils/toast";
 
 const API_BASE_URL = "https://localhost:7126/api";
 
@@ -9,7 +9,6 @@ const api = axios.create({
     headers: { "Content-Type": "application/json" },
 });
 
-// Interceptor para agregar el token y verificar expiración antes de cada solicitud
 api.interceptors.request.use(
     (config) => {
         const token = localStorage.getItem("token");
@@ -20,21 +19,21 @@ api.interceptors.request.use(
 
                 if (decoded.exp && decoded.exp < currentTime) {
                     showToast("Tu sesión ha expirado. Inicia sesión nuevamente.", "error");
-                    localStorage.removeItem("token");    // Eliminar token
-                    localStorage.removeItem("rol");      // Eliminar rol
-                    localStorage.removeItem("usuario");  // Eliminar usuario
-                    localStorage.removeItem("userId");   // Eliminar userId
-                    window.location.href = "/login"; // Redirigir al login
+                    localStorage.removeItem("token");
+                    localStorage.removeItem("rol");
+                    localStorage.removeItem("usuario");
+                    localStorage.removeItem("userId");
+                    window.location.href = "/login";
                     return Promise.reject("Token expirado");
                 }
 
                 config.headers.Authorization = `Bearer ${token}`;
             } catch (error) {
                 console.error("Error al decodificar el token:", error);
-                localStorage.removeItem("token");    // Eliminar token en caso de error
-                localStorage.removeItem("rol");      // Eliminar rol
-                localStorage.removeItem("usuario");  // Eliminar usuario
-                localStorage.removeItem("userId");   // Eliminar userId
+                localStorage.removeItem("token");
+                localStorage.removeItem("rol");
+                localStorage.removeItem("usuario");
+                localStorage.removeItem("userId");
             }
         }
         return config;
@@ -42,17 +41,16 @@ api.interceptors.request.use(
     (error) => Promise.reject(error)
 );
 
-// Interceptor para manejar errores globalmente (ej. token expirado)
 api.interceptors.response.use(
     (response) => response,
     (error) => {
         if (error.response?.status === 401) {
             showToast("Sesión expirada. Vuelve a iniciar sesión.", "error");
-            localStorage.removeItem("token");    // Eliminar token
-            localStorage.removeItem("rol");      // Eliminar rol
-            localStorage.removeItem("usuario");  // Eliminar usuario
-            localStorage.removeItem("userId");   // Eliminar userId
-            window.location.href = "/login"; // Redirigir al login
+            localStorage.removeItem("token");
+            localStorage.removeItem("rol");
+            localStorage.removeItem("user");
+            localStorage.removeItem("userId");
+            window.location.href = "/login";
         }
         return Promise.reject(error);
     }

@@ -11,7 +11,7 @@ const userRole = ref('');
 
 const menuItems = [
   { label: "Dashboard", icon: "pi pi-home", route: "/dashboard",roles: ['Administrador', 'Usuario'] },
-  { label: "Usuarios", icon: "pi pi-users", route: "/usuarios", roles: ['Administrador'] }, // solo visible para Administradores
+  { label: "Usuarios", icon: "pi pi-users", route: "/usuarios", roles: ['Administrador'] },
   { label: "Roles", icon: "pi pi-id-card", route: "/roles", roles: ['Administrador'] },
   { label: "Categorías", icon: "pi pi-list", route: "/categorias", roles: ['Administrador', 'Usuario'] },
   { label: "Inventario", icon: "pi pi-box", route: "/inventario", roles: ['Administrador', 'Usuario'] },

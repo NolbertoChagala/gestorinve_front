@@ -18,22 +18,32 @@ export const useAuthStore = defineStore('auth', () => {
 
     try {
       const response = await login(cleanedData)
+
+      // Verificar si se recibió el token en la respuesta
+      if (!response.token) {
+        errorMessage.value = 'Usuario no registrado'
+        throw new Error('Usuario no registrado')
+      }
+
       user.value = response.usuario
       console.log('Usuario logueado:', response.usuario)
       userId.value = response.usuario.id_usuario
-      console.log("ID del usuarioi", response.usuario.id_usuario)
+      console.log("ID del usuario", response.usuario.id_usuario)
       localStorage.setItem('token', response.token)
       localStorage.setItem('userId', response.usuario.id_usuario)
       localStorage.setItem('rol', response.usuario.rol.rol)
       localStorage.setItem('user', response.usuario.nombre)
 
       if (response.usuario.rol.rol === 'admin') {
-        router.push('/usuario')
+        router.push('/dashboard')
       } else {
-        router.push('/inventario')
+        router.push('/dashboard')
       }
     } catch (error: any) {
-      errorMessage.value = error.message || 'Hubo un problema al iniciar sesión. Intente de nuevo'
+      // En caso de que haya un error al hacer login o si no se recibió el token
+      if (!errorMessage.value) {
+        errorMessage.value = error.message || 'Hubo un problema al iniciar sesión. Intente de nuevo'
+      }
       throw error
     } finally {
       loading.value = false
@@ -50,7 +60,7 @@ export const useAuthStore = defineStore('auth', () => {
       localStorage.removeItem('rol')
       localStorage.removeItem('user')
 
-      router.push('/') 
+      router.push('/')
     } catch (error) {
       console.error('Error al cerrar sesión:', error)
       throw error

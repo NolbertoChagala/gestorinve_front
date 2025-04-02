@@ -134,8 +134,57 @@
                 </div>
             </div>
         </div>
-        <div class="card">
-            <Chart type="bar" :data="chartData" :options="chartOptions" class="h-[30rem]" />
+        <div class="bg-white rounded-2xl p-4 w-44 mb-4 flex justify-end items-end">
+            <button @click="generateReport" :disabled="loading" class="font-bold cursor-pointer">Descargar Reporte</button>
+            <p v-if="loading">Generando reporte...</p>
+            <p v-if="errorMessage" class="text-red-500">{{ errorMessage }}</p>
+        </div>
+        <div class="grid gap-5">
+            <!-- Gráfica para stock CRÍTICO (<=10) -->
+            <div class="bg-white rounded-2xl p-4 shadow-sm">
+                <div class="flex justify-between items-center mb-4">
+                    <h3 class="text-lg font-semibold text-red-600">
+                        <i class="pi pi-exclamation-triangle mr-2"></i>
+                        Productos con Stock Crítico (menos de 10 unidades)
+                    </h3>
+                    <span class="bg-red-100 text-red-800 px-3 py-1 rounded-full text-sm">
+                        {{ criticalChartData.labels.length }} productos
+                    </span>
+                </div>
+                <div class="h-[300px]">
+                    <Chart v-if="criticalChartData.labels.length > 0" type="bar" :data="criticalChartData"
+                        :options="criticalChartOptions" class="h-full" />
+                    <div v-else class="h-full flex items-center justify-center bg-gray-50 rounded-lg">
+                        <p class="text-gray-500">
+                            <i class="pi pi-check-circle mr-2"></i>
+                            No hay productos con stock crítico
+                        </p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Gráfica para stock BAJO (<=50) -->
+            <div class="bg-white rounded-2xl p-4 shadow-sm">
+                <div class="flex justify-between items-center mb-4">
+                    <h3 class="text-lg font-semibold text-amber-600">
+                        <i class="pi pi-exclamation-circle mr-2"></i>
+                        Productos con Stock Bajo (menos de 50 unidades)
+                    </h3>
+                    <span class="bg-amber-100 text-amber-800 px-3 py-1 rounded-full text-sm">
+                        {{ lowStockChartData.labels.length }} productos
+                    </span>
+                </div>
+                <div class="h-[300px]">
+                    <Chart v-if="lowStockChartData.labels.length > 0" type="bar" :data="lowStockChartData"
+                        :options="lowStockChartOptions" class="h-full" />
+                    <div v-else class="h-full flex items-center justify-center bg-gray-50 rounded-lg">
+                        <p class="text-gray-500">
+                            <i class="pi pi-check-circle mr-2"></i>
+                            No hay productos con stock bajo
+                        </p>
+                    </div>
+                </div>
+            </div>
         </div>
     </SidebarComponent>
 </template>
@@ -148,7 +197,7 @@ import { useCategoryStore } from '@/stores/categoryStore';
 import { useUserStore } from '@/stores/userStore';
 import { useRolStore } from '@/stores/rolStore';
 import { useInventoryStore } from '@/stores/inventoryStore';
-import { onMounted, computed, ref } from 'vue';
+import { onMounted, computed, ref, watch } from 'vue';
 import Chart from 'primevue/chart';
 import type { TooltipItem } from 'chart.js';
 
@@ -161,6 +210,13 @@ const categoryStore = useCategoryStore();
 const userStore = useUserStore();
 const rolStore = useRolStore();
 const inventoryStore = useInventoryStore();
+
+const generateReport = async () => {
+    await inventoryStore.generateReport();
+}
+
+const loading = computed(() => inventoryStore.loading);
+const errorMessage = computed(() => inventoryStore.errorMessage);
 
 //para hacer el conteo de los proveedores
 const providerCount = computed(() => {
@@ -197,114 +253,144 @@ const inventoryCount = computed(() => {
     return inventoryStore.products.length;
 })
 
-const chartData = ref();
-const chartOptions = ref();
+// Datos para las gráficas
+const criticalChartData = ref({
+    labels: [] as string[],
+    datasets: [] as unknown[]
+});
 
-const setChartData = () => {
+const lowStockChartData = ref({
+    labels: [] as string[],
+    datasets: [] as unknown[]
+});
+
+// Opciones para las gráficas
+const criticalChartOptions = ref({});
+const lowStockChartOptions = ref({});
+
+// Preparar los datos de las gráficas
+const prepareChartsData = () => {
     const documentStyle = getComputedStyle(document.documentElement);
 
-    const products = inventoryStore.products;
-    const productNames = products.map(p => p.producto);
-    const productQuantities = products.map(p => p.stock);
-    const criticalStock = 10; // Nivel de stock crítico
+    // Filtrar y ordenar productos
+    const criticalProducts = inventoryStore.products
+        .filter(p => p.stock <= 10)
+        .sort((a, b) => a.stock - b.stock);
 
-    return {
-        labels: productNames,
-        datasets: [
-            {
-                label: 'Stock de Productos',
-                backgroundColor: products.map(p =>
-                    p.stock <= criticalStock ?
-                    documentStyle.getPropertyValue('--p-red-600') :
-                    documentStyle.getPropertyValue('--p-cyan-500')
-                ),
-                borderColor: products.map(p =>
-                    p.stock <= criticalStock ?
-                    documentStyle.getPropertyValue('--p-red-800') :
-                    documentStyle.getPropertyValue('--p-gray-200')
-                ),
-                borderWidth: 1,
-                data: productQuantities
-            }
-        ]
+    const lowStockProducts = inventoryStore.products
+        .filter(p => p.stock > 10 && p.stock <= 50)
+        .sort((a, b) => a.stock - b.stock);
+
+    // Configurar datos para gráfica crítica
+    criticalChartData.value = {
+        labels: criticalProducts.map(p => p.producto),
+        datasets: [{
+            label: 'Stock Crítico',
+            backgroundColor: criticalProducts.map(p =>
+                (p?.stock || 0) <= 5 ? documentStyle.getPropertyValue('--red-600') || '#dc2626'
+                    : documentStyle.getPropertyValue('--red-400') || '#f87171'
+            ),
+            borderColor: documentStyle.getPropertyValue('--red-800') || '#991b1b',
+            borderWidth: 1,
+            borderRadius: 4,
+            data: criticalProducts.map(p => p?.stock || 0)
+        }]
     };
-}
 
-const setChartOptions = () => {
-    const documentStyle = getComputedStyle(document.documentElement);
-    const textColor = documentStyle.getPropertyValue('--p-text-color');
-    const textColorSecondary = documentStyle.getPropertyValue('--p-text-muted-color');
-    const surfaceBorder = documentStyle.getPropertyValue('--p-content-border-color');
-    const criticalStock = 10;
+    // Configurar datos para gráfica de stock bajo
+    lowStockChartData.value = {
+        labels: lowStockProducts.map(p => p.producto),
+        datasets: [{
+            label: 'Stock Bajo',
+            backgroundColor: lowStockProducts.map(p =>
+                (p?.stock || 0) <= 20 ? documentStyle.getPropertyValue('--amber-500') || '#f59e0b'
+                    : documentStyle.getPropertyValue('--amber-300') || '#fcd34d'
+            ),
+            borderColor: documentStyle.getPropertyValue('--amber-700') || '#b45309',
+            borderWidth: 1,
+            borderRadius: 4,
+            data: lowStockProducts.map(p => p?.stock || 0)
+        }]
+    };
 
-    return {
+    // Configurar opciones comunes
+    const commonOptions = {
         maintainAspectRatio: false,
-        aspectRatio: 0.8,
+        responsive: true,
         plugins: {
+            legend: { display: false },
             tooltip: {
                 callbacks: {
-                    title: (context: TooltipItem<'bar'>[]) => context[0].label,
+                    title: (items: TooltipItem<'bar'>[]) => items[0].label,
                     label: (context: TooltipItem<'bar'>) => {
+                        const product = inventoryStore.products.find(p => p.producto === context.label);
+                        if (!product) return ['Producto no encontrado'];
                         const stock = context.raw as number;
-                        const price = inventoryStore.products.find(p => p.producto === context.label)?.precio_unitario || 0;
-
-                        const message = [
-                            `Stock: ${stock} unidades`,
-                            `Precio unitario: $${price.toFixed(2)}`
+                        const messages = [
+                            `Stock actual: ${stock} unidades`,
+                            `Precio unitario: $${product?.precio_unitario.toFixed(2) || 'N/A'}`,
+                            `Proveedor: ${product?.proveedor || 'N/A'}`,
+                            `Categoría: ${product?.categoria || 'N/A'}`,
                         ];
 
-                        if (stock <= criticalStock) {
-                            message.push('¡Este producto se está agotando!');
+                        if (stock <= 10) {
+                            messages.push('❗ Necesita atención inmediata');
+                        } else if (stock <= 20) {
+                            messages.push('⚠️ Reorden prioritario');
+                        } else {
+                            messages.push('ℹ️ Considerar reorden');
                         }
 
-                        return message;
+                        return messages;
                     }
                 },
-                displayColors: false,
-                backgroundColor: documentStyle.getPropertyValue('--p-surface-0'),
-                titleColor: documentStyle.getPropertyValue('--p-primary-500'),
-                bodyColor: textColor,
-                borderColor: surfaceBorder,
+                backgroundColor: '#ffffff',
+                titleColor: '#495057',
+                bodyColor: '#6c757d',
+                borderColor: '#dee2e6',
                 borderWidth: 1,
-                padding: 12
-            },
-            legend: {
-                labels: {
-                    color: textColor,
-                    usePointStyle: true,
-                    pointStyle: 'rectRounded'
-                }
+                padding: 12,
+                displayColors: false,
+
             }
         },
         scales: {
             x: {
-                title: {
-                    display: true,
-                    text: 'Cantidad en stock',
-                    color: textColorSecondary
-                },
-                grid: {
-                    color: surfaceBorder,
-                    drawBorder: false
-                },
-                ticks: {
-                    color: textColorSecondary
-                }
+                grid: { display: false },
+                ticks: { color: '#6c757d' }
             },
             y: {
-                ticks: {
-                    color: textColorSecondary,
-                    autoSkip: false
-                },
-                grid: {
-                    color: surfaceBorder,
-                    drawBorder: false
-                }
+                beginAtZero: true,
+                grid: { color: '#dee2e6' },
+                ticks: { color: '#6c757d' }
             }
-        },
-        hover: {
-            mode: 'nearest',
-            intersect: true
+        }
+    };
+
+    // Opciones específicas para cada gráfica
+    criticalChartOptions.value = {
+        ...commonOptions,
+        plugins: {
+            ...commonOptions.plugins,
+            title: {
+                display: true,
+                text: 'Productos con Stock Crítico',
+                color: '#dc2626',
+                font: { size: 16 }
+            }
+        }
+    };
+
+    lowStockChartOptions.value = {
+        ...commonOptions,
+        plugins: {
+            ...commonOptions.plugins,
+            title: {
+                display: true,
+                text: 'Productos con Stock Bajo',
+                color: '#d97706',
+                font: { size: 16 }
+            }
         }
     };
 };
@@ -316,15 +402,12 @@ onMounted(async () => {
     await userStore.fetchUsers();
     await rolStore.fetchRoles();
     await inventoryStore.fetchProducts();
-    chartData.value = setChartData();
-    chartOptions.value = setChartOptions();
+    console.log('Ejemplo de producto:', inventoryStore.products[0]);
 })
 
-</script>
+// Observar cambios en los productos
+watch(() => inventoryStore.products, () => {
+    prepareChartsData();
+}, { immediate: true });
 
-<style scoped>
-.low-stock {
-    background-color: red;
-    color: white;
-}
-</style>
+</script>

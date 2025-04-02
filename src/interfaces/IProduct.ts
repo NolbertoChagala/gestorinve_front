@@ -3,6 +3,8 @@ export interface IProduct {
     producto: string;
     stock: number;
     precio_unitario: number;
+    proveedor: string;
     proveedor_id: number;
+    categoria: string;
     categoria_id: number;
   }

@@ -1,6 +1,7 @@
 <script setup>
 import { ref, onMounted } from "vue";
 import { useRouter } from "vue-router";
+import { useAuthStore } from "@/stores/authStore";
 
 const router = useRouter();
 const isCollapsed = ref(false);
@@ -8,6 +9,7 @@ const showUserMenu = ref(false);
 
 const userName = ref('');
 const userRole = ref('');
+const authStore = useAuthStore()
 
 const menuItems = [
   { label: "Dashboard", icon: "pi pi-home", route: "/dashboard",roles: ['Administrador', 'Usuario'] },
@@ -44,12 +46,12 @@ const toggleSidebar = () => {
   showUserMenu.value = false;
 };
 
-const logout = () => {
-  console.log("Cerrando sesión...");
-  localStorage.removeItem('token');
-  localStorage.removeItem('user');
-  localStorage.removeItem('rol');
-  router.push('/login');
+const logout = async () => {
+  try {
+    await authStore.logoutUser();
+  } catch (error) {
+    console.log('Error de login', error);
+  }
 };
 
 </script>

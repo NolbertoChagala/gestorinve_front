@@ -59,8 +59,6 @@ export const useAuthStore = defineStore('auth', () => {
       localStorage.removeItem('userId')
       localStorage.removeItem('rol')
       localStorage.removeItem('user')
-
-      router.push('/')
     } catch (error) {
       console.error('Error al cerrar sesión:', error)
       throw error

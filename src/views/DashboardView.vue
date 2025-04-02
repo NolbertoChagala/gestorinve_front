@@ -134,10 +134,12 @@
                 </div>
             </div>
         </div>
-        <div class="bg-white rounded-2xl p-4 w-44 mb-4 flex justify-end items-end">
-            <button @click="generateReport" :disabled="loading" class="font-bold cursor-pointer">Descargar Reporte</button>
-            <p v-if="loading">Generando reporte...</p>
-            <p v-if="errorMessage" class="text-red-500">{{ errorMessage }}</p>
+        <div class="flex justify-end">
+            <div class="bg-white rounded-2xl p-4 w-44 mb-4">
+                <button @click="generateReport" :disabled="loading" class="font-bold cursor-pointer">Descargar Reporte</button>
+                <p v-if="loading">Generando reporte...</p>
+                <p v-if="errorMessage" class="text-red-500">{{ errorMessage }}</p>
+            </div>
         </div>
         <div class="grid gap-5">
             <!-- Gráfica para stock CRÍTICO (<=10) -->

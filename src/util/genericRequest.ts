@@ -48,13 +48,15 @@ export const genericRequest = async (
 export const genericRequestAuthenticated = async (
   url: string,
   method: HTTPMethod,
-  body?: any
+  body?: any,
+  options?: {responseType?: 'blob' | 'json'}
 ) => {
   try {
     const response = await api({
       url: url,
       method,
-      data: body
+      data: body,
+      responseType: options?.responseType || 'json',
     })
     return response.data;
   } catch (error: any) {

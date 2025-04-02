@@ -3,7 +3,7 @@ import { ref } from "vue";
 import { useToast } from "primevue/usetoast";
 import type { IProduct } from "@/interfaces/IProduct";
 import type { ICreateProduct } from "@/interfaces/ICreateProduct";
-import { getProducts, createProduct, editProduct, deleteProduct } from "@/services/inventoryService";
+import { getProducts, createProduct, editProduct, deleteProduct, GenerateReport } from "@/services/inventoryService";
 import type { IEditProduct } from "@/interfaces/IEditProduct";
 
 export const useInventoryStore = defineStore('inventory', () => {
@@ -110,6 +110,49 @@ export const useInventoryStore = defineStore('inventory', () => {
         }
     };
 
+    const generateReport = async () => {
+        loading.value = true;
+        try {
+            const pdfBlob = await GenerateReport();
+
+            // Crear URL para el Blob
+            const pdfUrl = URL.createObjectURL(pdfBlob);
+
+            // Crear elemento de descarga
+            const link = document.createElement('a');
+            link.href = pdfUrl;
+            link.download = 'LowStockReport.pdf'; // Nombre del archivo
+            link.style.display = 'none';
+
+            // Descargar
+            document.body.appendChild(link);
+            link.click();
+
+            // Limpieza
+            setTimeout(() => {
+                document.body.removeChild(link);
+                URL.revokeObjectURL(pdfUrl);
+            }, 100);
+
+            // Notificación de éxito
+            toast.add({
+                severity: 'success',
+                summary: 'Éxito',
+                detail: 'Reporte descargado correctamente',
+                life: 3000
+            });
+        } catch (error: any) {
+            toast.add({
+                severity: 'error',
+                summary: 'Error',
+                detail: error.message || 'Error al generar el reporte',
+                life: 3000
+            });
+        } finally {
+            loading.value = false;
+        }
+    };
+
     return {
         products,
         loading,
@@ -118,6 +161,7 @@ export const useInventoryStore = defineStore('inventory', () => {
         fetchProducts,
         addProduct,
         updateProduct,
-        removeProduct
+        removeProduct,
+        generateReport
     };
 });

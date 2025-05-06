@@ -36,7 +36,7 @@
                               <Button icon="pi pi-pencil" class="p-button-rounded p-button-warning"
                                   @click="abrirModalEditar(provider)" />
 
-                              <!-- Condicional para mostrar el botón solo si el usuario es administrador -->
+
                               <Button v-if="userRole == 'Administrador'" icon="pi pi-trash" class="p-button-rounded p-button-danger"
                                   @click="confirmDelete(provider.id_proveedor)" />
                           </td>
@@ -57,7 +57,7 @@
 import { computed, onMounted, ref } from 'vue';
 import SidebarComponent from '../../components/SidebarComponent.vue';
 import { useProviderStore } from '@/stores/providerStore';
-import { useAuthStore } from '@/stores/authStore'; 
+import { useAuthStore } from '@/stores/authStore';
 import ModalProvider from '@/components/Modals/AddProviderModal.vue';
 import type { IProvider } from '@/interfaces/IProvider';
 import ConfirmDelete from '@/components/ConfirmDelete.vue';
@@ -65,7 +65,7 @@ import ConfirmDelete from '@/components/ConfirmDelete.vue';
 const providerStore = useProviderStore();
 const providers = computed(() => providerStore.providers);
 const authStore = useAuthStore()
-// Obtén el rol del usuario desde el store
+
 const userRole = authStore.user?.rol.rol
 
 onMounted(() => {

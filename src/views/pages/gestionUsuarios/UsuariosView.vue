@@ -55,7 +55,7 @@
     </div>
 
     <ConfirmDelete ref="confirmDeleteModal" @confirmDelete="deleteUsers" />
-    <!-- Pasar correctamente los datos del usuario a editar -->
+    
     <ModalRegister
       v-if="mostrarModalRegister"
       :usuarioParaEditar="usuarioParaEditar"

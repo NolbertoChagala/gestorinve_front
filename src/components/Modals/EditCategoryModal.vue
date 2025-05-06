@@ -18,7 +18,7 @@ const categoryStore = useCategoryStore();
 
 const props = defineProps({
     isOpen: Boolean,
-    selectedCategory: Object as () => ICategory | null // Categoría a editar
+    selectedCategory: Object as () => ICategory | null
 });
 
 const emit = defineEmits(['close', 'confirm']);
@@ -28,20 +28,20 @@ const category = ref<ICategory>({
     categoria: ''
 });
 
-// Sincronizar datos cuando se abre el modal
+
 watch(() => props.selectedCategory, (newCategory) => {
     if (newCategory) {
         category.value = { ...newCategory };
     }
 }, { immediate: true });
 
-// Métodos
+
 const closeModal = () => {
     emit('close');
 };
 
 const handleUpdateCategory = async () => {
-    if (!category.value.categoria.trim()) return; // Evitar campos vacíos
+    if (!category.value.categoria.trim()) return; 
     await categoryStore.editCategory(category.value.id_categoria, category.value);
     closeModal();
 };

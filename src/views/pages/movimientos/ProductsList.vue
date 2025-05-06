@@ -49,25 +49,25 @@ import * as yup from 'yup';
 
 const inventoryStore = useInventoryStore();
 
-// Variables para manejar la búsqueda
+
 const searchQuery = ref("");
 const emit = defineEmits();
 
-// Validación de búsqueda con Yup
+
 const searchValidation = yup.string()
     .matches(/^[a-zA-Z0-9\s]*$/, "Solo se permiten letras, números y espacios")
     .max(50, "Máximo 50 caracteres");
 
-// Filtrado de productos según la búsqueda
+
 const filteredProducts = computed(() => {
     return inventoryStore.products.filter((product) =>
         product.producto.toLowerCase().includes(searchQuery.value.toLowerCase())
     );
 });
 
-// Emitir evento para agregar un producto al componente padre
+
 const addProduct = (product) => {
-    const productToAdd = { ...product, cantidad: 1 };  // Se agrega una cantidad inicial
+    const productToAdd = { ...product, cantidad: 1 };  
     emit("addProduct", productToAdd);
 };
 

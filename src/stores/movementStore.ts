@@ -13,7 +13,6 @@ export const useMovementStore = defineStore('movements', () => {
     const errorMessage = ref("");
     const toast = useToast();
 
-    // Función para obtener todos los movimientos
     const fetchMovements = async () => {
         isLoading.value = true;
         errorMessage.value = "";
@@ -28,7 +27,6 @@ export const useMovementStore = defineStore('movements', () => {
         }
     }
 
-    // Función para obtener los detalles de un movimiento por ID
     const fetchMovementDetails = async (id: number) => {
         try {
             const response = await getMovementDetails(id);
@@ -38,15 +36,14 @@ export const useMovementStore = defineStore('movements', () => {
         }
     };
 
-    // Registrar un nuevo movimiento
     const addMovement = async (movementData: IRegisterMovement) => {
         errorMessage.value = "";
-        
+
         try {
             const response = await registerMovement(movementData);
             if (response.success) {
                 toast.add({ severity: "success", summary: "Éxito", detail: response.message, life: 3000 });
-                fetchMovements(); // Recargar lista de movimientos
+                fetchMovements(); 
             } else {
                 errorMessage.value = response.message;
                 toast.add({ severity: "warn", summary: "Atención", detail: response.message, life: 3000 });

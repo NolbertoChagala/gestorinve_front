@@ -22,7 +22,7 @@
             <tr>
               <th class="w-1/6 py-3 px-4 text-center">ID</th>
               <th class="w-2/6 py-3 px-4 text-center">Categoría</th>
-              <!-- Condición para mostrar el encabezado de Acciones solo si el rol es "Administrador" -->
+              
               <th class="w-2/6 py-3 px-4 text-center">
                 Acciones
               </th>

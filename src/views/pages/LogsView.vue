@@ -29,7 +29,7 @@
                         </tr>
                     </thead>
 
-                    <!-- Cuerpo de la tabla -->
+
                     <tbody v-if="logStore.logs.length > 0" class="divide-y divide-gray-300">
                         <tr v-for="log in paginatedLogs" :key="log.id_log"
                             class="hover:bg-gray-100 even:bg-gray-50 transition">
@@ -51,7 +51,7 @@
             </div>
         </div>
 
-        <!-- Paginador Componente -->
+
         <div class="flex justify-center mt-4">
             <Paginator :rows="rowsPerPage" :totalRecords="logStore.logs.length"
                 :rowsPerPageOptions="[10, 20, 30]" @page="onPageChange" />
@@ -72,29 +72,29 @@ import { useLogStore } from '@/stores/logStore';
 const logStore = useLogStore();
 const confirm = useConfirm();
 
-// Llamar a fetchMovements cuando se monte la vista
+
 onMounted(() => {
     logStore.fetchLogs();
 });
 
-// Estado para manejar la paginación
+
 const currentPage = ref(0);
 const rowsPerPage = ref(10);
 
-// Obtener los movimientos paginados
+
 const paginatedLogs = computed(() => {
     const start = currentPage.value * rowsPerPage.value;
     const end = start + rowsPerPage.value;
     return logStore.logs.slice(start, end);
 });
 
-// Manejar el cambio de página
+
 const onPageChange = (event: { page: number, rows: number }) => {
     currentPage.value = event.page;
     rowsPerPage.value = event.rows;
 };
 
-// Confirmar eliminación de logs
+
 const confirmDelete = () => {
     confirm.require({
         message: '¿Estás seguro de que deseas eliminar todos los logs? Esta acción no se puede deshacer.',

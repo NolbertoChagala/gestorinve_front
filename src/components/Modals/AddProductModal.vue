@@ -1,6 +1,5 @@
 <template>
   <BaseModal :isOpen="isOpen" @close="closeModal" title="Añadir Producto" @confirm="handleCreateProduct">
-    <!-- Formulario para añadir un producto -->
     <div>
       <label for="producto" class="block text-gray-700 font-medium mb-2">Producto</label>
       <input type="text" v-model="product.producto" required placeholder="Ejemplo: Electrónica, Television...."
@@ -48,17 +47,15 @@ const categoryStore = useCategoryStore();
 const providerStore = useProviderStore();
 
 const props = defineProps({
-  isOpen: Boolean, // Control de visibilidad
+  isOpen: Boolean,
 });
 
 const emit = defineEmits(['close', 'confirm']);
 
-// Métodos
 const closeModal = () => {
   emit('close');
 }
 
-// Estado reactivo del producto
 const product = ref<ICreateProduct>({
   producto: '',
   stock: 0,

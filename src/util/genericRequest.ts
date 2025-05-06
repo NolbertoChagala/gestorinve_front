@@ -34,17 +34,17 @@ export const genericRequest = async (
       status_code: statusCode,
     }
 
-    // Llamamos al servicio para registrar el log
+
     await registerLog(log);
 
-    // Mostramos el error en la consola para depuración
+
     console.error(`Error en ${method} ${url}: ${errorMessage}`);
 
     return { error: true, message: errorMessage };
   }
 }
 
-// Peticiones con autenticación
+
 export const genericRequestAuthenticated = async (
   url: string,
   method: HTTPMethod,
@@ -70,11 +70,8 @@ export const genericRequestAuthenticated = async (
       endpoint: endpoint,
       status_code: statusCode,
     }
-
-    // Llamamos al servicio para registrar el log
     await registerLog(log);
 
-    // Mostramos el error en la consola para depuración
     console.error(`Error en ${method} ${url}: ${errorMessage}`);
 
     return { error: true, message: errorMessage };

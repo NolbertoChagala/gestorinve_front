@@ -142,7 +142,7 @@
             </div>
         </div>
         <div class="grid gap-5">
-            <!-- Gráfica para stock CRÍTICO (<=10) -->
+
             <div class="bg-white rounded-2xl p-4 shadow-sm">
                 <div class="flex justify-between items-center mb-4">
                     <h3 class="text-lg font-semibold text-red-600">
@@ -165,7 +165,7 @@
                 </div>
             </div>
 
-            <!-- Gráfica para stock BAJO (<=50) -->
+
             <div class="bg-white rounded-2xl p-4 shadow-sm">
                 <div class="flex justify-between items-center mb-4">
                     <h3 class="text-lg font-semibold text-amber-600">
@@ -220,42 +220,42 @@ const generateReport = async () => {
 const loading = computed(() => inventoryStore.loading);
 const errorMessage = computed(() => inventoryStore.errorMessage);
 
-//para hacer el conteo de los proveedores
+
 const providerCount = computed(() => {
     return providerStore.providers.length;
 })
 
-//para hacer el conteo de los movimientos de entrada
+
 const movementCountEntry = computed(() => {
     return movementStore.movements.filter((movement) => movement.tipo_movimiento === 'Entrada').length;
 })
 
-//para hacer el conteo de los movimientos de salida
+
 const movementCountExit = computed(() => {
     return movementStore.movements.filter((movement) => movement.tipo_movimiento === 'Salida').length;
 })
 
-//para hacer el conteo de las categorias
+
 const categoryCount = computed(() => {
     return categoryStore.categories.length;
 })
 
-//para hacer el conteo de los usuarios
+
 const userCount = computed(() => {
     return userStore.usuarios.length;
 })
 
-//para hacer el conteo de los roles
+
 const rolCount = computed(() => {
     return rolStore.roles.length;
 })
 
-//para hacer el conteo de los productos
+
 const inventoryCount = computed(() => {
     return inventoryStore.products.length;
 })
 
-// Datos para las gráficas
+
 const criticalChartData = ref({
     labels: [] as string[],
     datasets: [] as unknown[]
@@ -266,15 +266,15 @@ const lowStockChartData = ref({
     datasets: [] as unknown[]
 });
 
-// Opciones para las gráficas
+
 const criticalChartOptions = ref({});
 const lowStockChartOptions = ref({});
 
-// Preparar los datos de las gráficas
+
 const prepareChartsData = () => {
     const documentStyle = getComputedStyle(document.documentElement);
 
-    // Filtrar y ordenar productos
+
     const criticalProducts = inventoryStore.products
         .filter(p => p.stock <= 10)
         .sort((a, b) => a.stock - b.stock);
@@ -283,7 +283,7 @@ const prepareChartsData = () => {
         .filter(p => p.stock > 10 && p.stock <= 50)
         .sort((a, b) => a.stock - b.stock);
 
-    // Configurar datos para gráfica crítica
+
     criticalChartData.value = {
         labels: criticalProducts.map(p => p.producto),
         datasets: [{
@@ -299,7 +299,7 @@ const prepareChartsData = () => {
         }]
     };
 
-    // Configurar datos para gráfica de stock bajo
+
     lowStockChartData.value = {
         labels: lowStockProducts.map(p => p.producto),
         datasets: [{
@@ -315,7 +315,7 @@ const prepareChartsData = () => {
         }]
     };
 
-    // Configurar opciones comunes
+
     const commonOptions = {
         maintainAspectRatio: false,
         responsive: true,
@@ -369,7 +369,7 @@ const prepareChartsData = () => {
         }
     };
 
-    // Opciones específicas para cada gráfica
+
     criticalChartOptions.value = {
         ...commonOptions,
         plugins: {
@@ -407,7 +407,7 @@ onMounted(async () => {
     console.log('Ejemplo de producto:', inventoryStore.products[0]);
 })
 
-// Observar cambios en los productos
+
 watch(() => inventoryStore.products, () => {
     prepareChartsData();
 }, { immediate: true });

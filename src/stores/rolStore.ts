@@ -11,7 +11,7 @@ export const useRolStore = defineStore('rol', () => {
   const error = ref<string | null>(null)
   const toast = useToast()
 
-  // Traer todos los roles
+
   const fetchRoles = async () => {
     isLoading.value = true
     error.value = null
@@ -26,7 +26,7 @@ export const useRolStore = defineStore('rol', () => {
     }
   }
 
-  // Crear un rol
+
   const createRol = async (rol: Omit<Rol, 'id_rol'>) => {
     isLoading.value = true
     error.value = null
@@ -54,7 +54,7 @@ export const useRolStore = defineStore('rol', () => {
     }
   }
 
-  //Editar un rol
+
   const updateRol = async (id_rol: number, rol: Partial<Rol>) => {
     isLoading.value = true;
     error.value = null;
@@ -85,7 +85,6 @@ export const useRolStore = defineStore('rol', () => {
 
 
 
-  // Eliminar un rol
   const deleteRol = async (id: number) => {
     isLoading.value = true
     error.value = null

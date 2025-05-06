@@ -1,6 +1,5 @@
 <template>
   <BaseModal :isOpen="isOpen" @close="closeModal" title="Editar Producto" @confirm="handleUpdateProduct">
-    <!-- Formulario para Editar un producto -->
     <div>
       <label for="producto" class="block text-gray-700 font-medium mb-2">Producto</label>
       <input type="text" v-model="product.producto" required placeholder="Ejemplo: Electrónica, Television...."
@@ -48,18 +47,18 @@ const categoryStore = useCategoryStore();
 const providerStore = useProviderStore();
 
 const props = defineProps({
-  isOpen: Boolean, // Control de visibilidad
+  isOpen: Boolean,
   selectedProduct: Object as () => IEditProduct | null
 });
 
 const emit = defineEmits(['close', 'confirm']);
 
-// Métodos
+
 const closeModal = () => {
   emit('close');
 }
 
-// Estado reactivo del producto
+
 const product = ref<IEditProduct>({
   id_producto: 0,
   producto: '',
@@ -69,7 +68,7 @@ const product = ref<IEditProduct>({
   categoria_id: 0,
 });
 
-// Sincronizar datos cuando se abre el modal
+
 watch(() => props.selectedProduct, (newProduct) => {
     if (newProduct) {
         product.value = { ...newProduct };

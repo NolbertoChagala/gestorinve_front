@@ -1,7 +1,5 @@
 import { genericRequestAuthenticated } from "@/util/genericRequest";
 
-
-// Obtener todos los productos del inventario
 export const getProducts = async () => {
     const response = await genericRequestAuthenticated('/inventory', 'GET')
     return response;
@@ -24,17 +22,14 @@ export const deleteProduct = async (id: number) => {
 
 export const GenerateReport = async () => {
     try {
-        // Usa genericRequestAuthenticated con responseType: 'blob'
         const response = await genericRequestAuthenticated(
             '/Report/report',
             'GET',
             null,
-            { responseType: 'blob' } // ¡Esto es crucial!
+            { responseType: 'blob' }
         );
 
-        // Verifica si la respuesta es un Blob
         if (response instanceof Blob) {
-            // Verifica que el Blob no esté vacío y sea un PDF
             if (response.size === 0) {
                 throw new Error('El reporte generado está vacío');
             }
@@ -47,8 +42,6 @@ export const GenerateReport = async () => {
         throw new Error('Respuesta inesperada del servidor');
     } catch (error: any) {
         console.error('Error en GenerateReport:', error);
-
-        // Manejo específico para errores 404
         if (error.response?.status === 404) {
             throw new Error('No hay productos con bajo stock para generar el reporte');
         }

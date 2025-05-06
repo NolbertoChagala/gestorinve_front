@@ -6,11 +6,10 @@
             <span class="ml-2 font-medium text-lg">Regresar</span>
         </div>
 
-        <!-- Contenedor del detalle -->
         <div v-if="movement" class="bg-white w-full rounded-2xl shadow-xl p-6">
             <h1 class="text-3xl font-bold text-gray-800 mb-6">Detalles del Movimiento</h1>
 
-            <!-- Tarjetas con información -->
+
             <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 mb-8">
                 <div class="bg-white border-l-4 border-blue-500 p-5 rounded-lg shadow-md">
                     <p class="text-gray-500 text-sm">Número de Movimiento</p>
@@ -49,10 +48,10 @@
 
             </div>
 
-            <!-- Título de la sección de productos -->
+
             <h2 class="text-2xl font-semibold text-gray-800 mb-4">Productos registrados</h2>
 
-            <!-- Tabla de productos -->
+
             <div class="bg-white rounded-lg shadow-xl p-4">
                 <table class="table-auto w-full border-collapse rounded-lg overflow-hidden">
                     <thead class="bg-blue-100 text-gray-700">
@@ -81,7 +80,7 @@
             </div>
         </div>
 
-        <!-- Mostrar mensaje si no hay datos -->
+
         <div v-else class="text-center text-gray-600 mt-10">
             <p>Cargando detalles del movimiento...</p>
         </div>
@@ -101,17 +100,17 @@ const route = useRoute();
 const movement = computed(() => movementStore.movementDetails);
 
 onMounted(async () => {
-    // Obtener el ID desde la URL
+
     const movementId = Number(route.params.id);
     await movementStore.fetchMovementDetails(movementId);
 })
 
-// Función para formatear la fecha
+
 const formatFecha = (fecha: string) => {
     return new Date(fecha).toLocaleDateString();
 };
 
-// Función para formatear la hora
+
 const formatHora = (fecha: string) => {
     return new Date(fecha).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
 };

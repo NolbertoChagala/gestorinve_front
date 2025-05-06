@@ -11,7 +11,6 @@ export const useCategoryStore = defineStore('category', () => {
     const successMessage = ref<string | null>(null);
     const toast = useToast();
 
-    // Obtener todas las categorías
     const fetchCategories = async () => {
         loading.value = true;
         errorMessage.value = null;
@@ -33,7 +32,6 @@ export const useCategoryStore = defineStore('category', () => {
         }
     };
 
-    // Crear una nueva categoría
     const addCategory = async (categoryData: ICategory) => {
         loading.value = true;
         errorMessage.value = null;
@@ -43,7 +41,7 @@ export const useCategoryStore = defineStore('category', () => {
             const response = await createCategory(categoryData);
             if (response.success) {
                 successMessage.value = response.message;
-                fetchCategories(); // Recargar las categorías
+                fetchCategories();
                 toast.add({ severity: "success", summary: "Éxito", detail: response.message, life: 3000 });
             } else {
                 errorMessage.value = response.message;
@@ -58,7 +56,6 @@ export const useCategoryStore = defineStore('category', () => {
         }
     };
 
-    // Editar una categoría
     const editCategory = async (id: number, categoryData: ICategory) => {
         loading.value = true;
         errorMessage.value = null;
@@ -83,7 +80,6 @@ export const useCategoryStore = defineStore('category', () => {
         }
     };
 
-    // Eliminar una categoría
     const removeCategory = async (id: number) => {
         loading.value = true;
         errorMessage.value = null;

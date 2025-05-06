@@ -103,7 +103,6 @@ const cerrarModal = () => {
   rolSeleccionado.value = { id_rol: 0, rol: '' };
 };
 
-// Confirmar eliminación de un rol
 const confirmDelete = (id: number) => {
   if (confirmDeleteModal.value) {
     confirmDeleteModal.value.show(id);

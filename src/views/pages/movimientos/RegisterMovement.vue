@@ -7,7 +7,7 @@
         </div>
 
         <div class="flex gap-6 h-screen">
-            <!-- Sección izquierda: Registrar movimiento -->
+
             <div class="w-1/2 bg-white shadow-lg rounded-lg p-4 flex flex-col h-full">
                 <h2 class="text-xl font-semibold mb-4 text-gray-800 text-center">Registrar Movimiento</h2>
 
@@ -16,7 +16,7 @@
                     <Dropdown v-model="movementType" :options="['Entrada', 'Salida']" class="w-full mt-2" />
                 </div>
 
-                <!-- Contenedor de productos seleccionados -->
+
                 <div class="rounded-lg p-3 flex-grow overflow-auto border border-gray-300 shadow-md">
                     <h3 class="text-md font-semibold mb-3 text-center">Productos Seleccionados</h3>
                     <DataTable :value="selectedProducts" class="p-datatable-sm w-full">
@@ -44,7 +44,7 @@
                 </div>
             </div>
 
-            <!-- Sección de productos disponibles -->
+
             <div class="w-1/2">
                 <ProductsList @addProduct="addProduct"/>
             </div>
@@ -93,7 +93,7 @@ const registerMovement = async () => {
     return;
   }
 
-  // Construir el objeto que espera el servidor
+  
   const movementData = {
     usuario_id: authStore.userId,
     tipo_movimiento: movementType.value,

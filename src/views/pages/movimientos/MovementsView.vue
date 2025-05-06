@@ -1,6 +1,5 @@
 <template>
     <SidebarComponent>
-        <!-- Contenedor superior -->
         <div class="bg-white w-full h-[28vh] rounded-2xl shadow-xl mb-8">
             <div class="pt-10 pl-8 pr-8">
                 <h1 class="text-5xl font-bold text-gray-800">Movimientos de Inventario</h1>
@@ -29,7 +28,7 @@
                         </tr>
                     </thead>
 
-                    <!-- Cuerpo de la tabla -->
+
                     <tbody v-if="movementStore.movements.length > 0" class="divide-y divide-gray-300">
                         <tr v-for="movement in paginatedMovements" :key="movement.id_movimiento"
                             class="hover:bg-gray-100 even:bg-gray-50 transition">
@@ -62,7 +61,7 @@
             </div>
         </div>
 
-        <!-- Paginador Componente -->
+
         <div class="flex justify-center mt-4">
             <Paginator :rows="rowsPerPage" :totalRecords="movementStore.movements.length"
                 :rowsPerPageOptions="[10, 20, 30]" @page="onPageChange" />
@@ -78,23 +77,23 @@ import { useMovementStore } from '@/stores/movementStore';
 
 const movementStore = useMovementStore();
 
-// Llamar a fetchMovements cuando se monte la vista
+
 onMounted(() => {
     movementStore.fetchMovements();
 });
 
-// Estado para manejar la paginación
+
 const currentPage = ref(0);
 const rowsPerPage = ref(10);
 
-// Obtener los movimientos paginados
+
 const paginatedMovements = computed(() => {
     const start = currentPage.value * rowsPerPage.value;
     const end = start + rowsPerPage.value;
     return movementStore.movements.slice(start, end);
 });
 
-// Manejar el cambio de página
+
 const onPageChange = (event: { page: number, rows: number }) => {
     currentPage.value = event.page;
     rowsPerPage.value = event.rows;

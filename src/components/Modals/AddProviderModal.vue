@@ -37,7 +37,7 @@ const props = defineProps({
     }
 });
 
-const isOpen = ref(true); // Se inicia en `true` para que el modal se muestre correctamente
+const isOpen = ref(true);
 const nuevoProveedor = ref<IProvider>({ ...props.proveedorParaEditar });
 
 watch(() => props.proveedorParaEditar, (newValue) => {

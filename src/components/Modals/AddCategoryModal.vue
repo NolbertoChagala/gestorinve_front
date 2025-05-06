@@ -17,7 +17,7 @@ import type { ICategory } from '@/interfaces/ICategory';
 const categoryStore = useCategoryStore();
 
 const props = defineProps({
-  isOpen: Boolean, // Control de visibilidad
+  isOpen: Boolean,
 });
 
 const emit = defineEmits(['close', 'confirm']);
@@ -27,15 +27,15 @@ const category = ref<ICategory>({
   categoria: ''
 })
 
-// Métodos
+
 const closeModal = () => {
   category.value.categoria = '';
   emit('close');
 }
 
 const handleCreateCategory = async () => {
-  if (!category.value.categoria.trim()) return; // Validar campo vacío
-  await categoryStore.addCategory(category.value); // Llamar al store directamente
+  if (!category.value.categoria.trim()) return;
+  await categoryStore.addCategory(category.value);
   closeModal();
 };
 </script>

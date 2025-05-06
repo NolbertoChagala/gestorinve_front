@@ -18,8 +18,6 @@ export const useAuthStore = defineStore('auth', () => {
 
     try {
       const response = await login(cleanedData)
-
-      // Verificar si se recibió el token en la respuesta
       if (!response.token) {
         errorMessage.value = 'Usuario no registrado'
         throw new Error('Usuario no registrado')
@@ -40,7 +38,6 @@ export const useAuthStore = defineStore('auth', () => {
         router.push('/dashboard')
       }
     } catch (error: any) {
-      // En caso de que haya un error al hacer login o si no se recibió el token
       if (!errorMessage.value) {
         errorMessage.value = error.message || 'Hubo un problema al iniciar sesión. Intente de nuevo'
       }

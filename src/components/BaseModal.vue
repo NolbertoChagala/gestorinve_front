@@ -4,13 +4,11 @@
         <div class="p-6 border-b border-gray-200">
           <h2 class="text-xl font-bold text-gray-800">{{ title }}</h2>
         </div>
-  
-        <!-- Contenido dinámico del modal -->
+
         <div class="p-6">
           <slot></slot>
         </div>
-  
-        <!-- Botones del Modal -->
+
         <div class="p-6 border-t border-gray-200 flex justify-end space-x-4">
           <button @click="closeModal" class="bg-gray-100 text-gray-700 px-4 py-2 rounded-lg hover:bg-gray-200 transition-colors">
             Cancelar
@@ -22,17 +20,16 @@
       </div>
     </div>
   </template>
-  
+
   <script setup lang="ts">
   const props = defineProps({
-    isOpen: { type: Boolean, required: true },  // Control de visibilidad
-    title: { type: String, required: true },  // Título dinámico
-    confirmButtonText: { type: String, default: 'Confirmar' }  // Texto del botón de confirmación
+    isOpen: { type: Boolean, required: true },
+    title: { type: String, required: true },
+    confirmButtonText: { type: String, default: 'Confirmar' }
   });
-  
+
   const emit = defineEmits(['close', 'confirm']);
-  
+
   const closeModal = () => emit('close');
   const confirmAction = () => emit('confirm');
   </script>
-  

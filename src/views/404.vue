@@ -82,16 +82,13 @@ import { useRouter } from 'vue-router';
 
 const router = useRouter();
 
-// Función para volver a la página anterior
+
 const goBack = () => {
     if (window.history.length > 1) {
-        window.history.back(); // Vuelve a la página anterior usando el historial del navegador
+        window.history.back();
     } else {
-        router.push('/'); // Si no hay página anterior, redirige al inicio
+        router.push('/');
     }
 };
 </script>
 
-<style scoped>
-/* Puedes agregar estilos específicos aquí si es necesario */
-</style>

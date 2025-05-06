@@ -13,7 +13,6 @@ export const useInventoryStore = defineStore('inventory', () => {
     const successMessage = ref<string | null>(null);
     const toast = useToast();
 
-    // Obtener todos los productos
     const fetchProducts = async () => {
         loading.value = true;
         errorMessage.value = null;
@@ -35,7 +34,6 @@ export const useInventoryStore = defineStore('inventory', () => {
         }
     };
 
-    // Crear un nuevo producto
     const addProduct = async (productData: ICreateProduct) => {
         loading.value = true;
         errorMessage.value = null;
@@ -45,7 +43,7 @@ export const useInventoryStore = defineStore('inventory', () => {
             const response = await createProduct(productData);
             if (response.success) {
                 successMessage.value = response.message;
-                fetchProducts(); // Recargar los productos
+                fetchProducts();
                 toast.add({ severity: "success", summary: "Éxito", detail: response.message, life: 3000 });
             } else {
                 errorMessage.value = response.message;
@@ -60,7 +58,6 @@ export const useInventoryStore = defineStore('inventory', () => {
         }
     };
 
-    // Editar un producto
     const updateProduct = async (id: number, productData: IEditProduct) => {
         loading.value = true;
         errorMessage.value = null;
@@ -85,7 +82,6 @@ export const useInventoryStore = defineStore('inventory', () => {
         }
     };
 
-    // Eliminar un producto
     const removeProduct = async (id: number) => {
         loading.value = true;
         errorMessage.value = null;
@@ -115,26 +111,19 @@ export const useInventoryStore = defineStore('inventory', () => {
         try {
             const pdfBlob = await GenerateReport();
 
-            // Crear URL para el Blob
             const pdfUrl = URL.createObjectURL(pdfBlob);
 
-            // Crear elemento de descarga
             const link = document.createElement('a');
             link.href = pdfUrl;
-            link.download = 'LowStockReport.pdf'; // Nombre del archivo
+            link.download = 'LowStockReport.pdf';
             link.style.display = 'none';
-
-            // Descargar
             document.body.appendChild(link);
             link.click();
 
-            // Limpieza
             setTimeout(() => {
                 document.body.removeChild(link);
                 URL.revokeObjectURL(pdfUrl);
             }, 100);
-
-            // Notificación de éxito
             toast.add({
                 severity: 'success',
                 summary: 'Éxito',
